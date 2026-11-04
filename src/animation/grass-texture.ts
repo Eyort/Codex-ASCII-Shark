@@ -29,8 +29,8 @@ export function createGrassAsciiTexture(image: CanvasImageSource, width: number,
   if (![width, height].every(Number.isFinite) || width <= 0 || height <= 0) throw new Error("target size must be positive");
   const source = image as CanvasImageSource & { width: number; height: number };
   const crop = computeCoverCrop(source.width, source.height, width, height);
-  const cellWidth = Math.max(3, Math.round(7 / detail));
-  const cellHeight = Math.max(6, Math.round(12 / detail));
+  const cellWidth = Math.max(4, Math.round(10 / detail));
+  const cellHeight = Math.max(8, Math.round(16 / detail));
   const columns = Math.max(1, Math.ceil(width / cellWidth));
   const rows = Math.max(1, Math.ceil(height / cellHeight));
   const sample = document.createElement("canvas");
@@ -48,7 +48,7 @@ export function createGrassAsciiTexture(image: CanvasImageSource, width: number,
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const offset = (y * columns + x) * 4;
     const luminance = 0.2126 * pixels[offset]! + 0.7152 * pixels[offset + 1]! + 0.0722 * pixels[offset + 2]!;
-    context.fillStyle = `rgb(${pixels[offset]},${pixels[offset + 1]},${pixels[offset + 2]})`;
+    context.fillStyle = `rgba(${pixels[offset]},${pixels[offset + 1]},${pixels[offset + 2]},0.45)`;
     context.fillText(mapLuminanceToGlyph(luminance), x * cellWidth, y * cellHeight);
   }
   return texture;

@@ -74,7 +74,7 @@ export class GrassWaveEngine {
       strip.className = "ascii-grass-strip";
       const phase = index / count;
       const duration = getGrassDurationSeconds(this.options.speed) * (0.88 + (index % 5) * 0.06);
-      Object.assign(strip.style, { top: `${phase * 100}%`, height: `${Math.ceil(100 / count) + 1}%`, backgroundImage: `url("${texture}")`, backgroundSize: `100% ${count * 100}%`, backgroundPosition: `center ${count === 1 ? 0 : phase * 100 / (1 - 1 / count)}%`, animationDuration: `${duration.toFixed(2)}s`, animationDelay: `${(-phase * duration).toFixed(2)}s`, animationPlayState: this.options.paused ? "paused" : "running", opacity: String(0.45 + ((index * 17) % 40) / 100) });
+      Object.assign(strip.style, { top: `${phase * 100}%`, height: `${Math.ceil(100 / count) + 1}%`, backgroundImage: `url("${texture}")`, backgroundSize: `100% ${count * 100}%`, backgroundPosition: `center ${count === 1 ? 0 : phase * 100 / (1 - 1 / count)}%`, animationDuration: `${duration.toFixed(2)}s`, animationDelay: `${(-phase * duration).toFixed(2)}s`, animationPlayState: this.options.paused ? "paused" : "running", opacity: String(0.30 + ((index * 13) % 20) / 100) });
       this.root.append(strip);
     }
     this.root.style.opacity = String(this.options.opacity);
