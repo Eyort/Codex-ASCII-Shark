@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASCII Shark · Codex Work 背景演示</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="window">
+      <header><span class="mark">≋</span><strong>ASCII Shark</strong><span class="crumb">/ Codex Work 动画设置</span><span id="saveStatus" class="save-status" role="status" aria-live="polite">正在读取本地设置…</span></header>
+      <section class="stage">
+        <aside><b>项目</b><div class="nav active">当前任务</div><div class="nav">历史任务</div><div class="nav">设置</div></aside>
+        <section class="work">
+          <canvas id="ocean" aria-hidden="true"></canvas>
+          <div class="taskhead"><span>任务内容</span><span class="muted">本地预览</span></div>
+          <div class="conversation">
+            <div class="bubble user">请在聊天背景中放入一些游动的鲨鱼。</div>
+            <div class="bubble assistant"><b>Codex</b><p>我会先确认 Work 页面目标区域，然后再开始处理。Canvas 位于内容层后方，不接收鼠标事件。</p></div>
+          </div>
+          <div class="composer"><span>向 Codex 描述要构建的内容</span><button aria-label="添加">＋</button><button class="send" aria-label="发送">↑</button></div>
+        </section>
+      </section>
+      <footer class="controls">
+        <div class="control-topline">
+          <span class="control-title">动画参数</span>
+          <span class="control-note">改动会自动保存，并应用到运行中的 Codex Work</span>
+        </div>
+        <label class="switch-row"><span>在 Codex Work 显示鲨鱼</span><input id="enabled" type="checkbox" checked /><span class="switch" aria-hidden="true"></span></label>
+        <label>鲨鱼数量 <input id="count" type="range" min="1" max="12" value="3" /><output>3</output></label>
+        <label>透明度 <input id="opacity" type="range" min="0" max="80" value="32" /><output>32%</output></label>
+        <label>游泳速度 <input id="speed" type="range" min="10" max="200" value="55" /><output>0.55×</output></label>
+        <label class="color-row">颜色 <input id="color" type="color" value="#718a99" /><output id="colorValue">#718A99</output></label>
+        <button id="pause" type="button" aria-pressed="false">暂停动画</button>
+        <button id="reset" type="button">恢复默认</button>
+      </footer>
+      <p id="canvasStatus" class="caption">左侧是实时预览；保存后，Codex Work 会在约 1 秒内应用新参数。</p>
+    </main>
+    <script type="module" src="/src/demo.ts"></script>
+  </body>
+</html>

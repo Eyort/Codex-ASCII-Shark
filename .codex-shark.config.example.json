@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "paused": false,
+  "count": 3,
+  "opacity": 0.32,
+  "speed": 0.55,
+  "color": "#718a99",
+  "port": 9335,
+  "pollIntervalMs": 1200
+}

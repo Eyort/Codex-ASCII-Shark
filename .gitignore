@@ -1,0 +1,10 @@
+node_modules/
+dist/
+references/
+vendor/
+.codex-shark-state.json
+.codex-shark.config.json
+.codex-shark.config.json.tmp
+.codex-shark.stop
+.DS_Store
+Thumbs.db

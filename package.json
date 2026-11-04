@@ -1,0 +1,31 @@
+{
+  "name": "ascii-shark-chat-background",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4181 --strictPort",
+    "settings": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/open-settings.ps1",
+    "build": "tsc -p tsconfig.node.json && tsc --noEmit -p tsconfig.page.json && vite build && vite build --config vite.injector.config.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.page.json",
+    "test": "tsx --test tests/*.test.ts",
+    "inject": "tsx src/cli.ts watch",
+    "remove": "tsx src/cli.ts remove",
+    "stop:background": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/stop-background.ps1",
+    "cdp:start": "powershell.exe -NoProfile -File scripts/start-codex-cdp.ps1",
+    "cdp:stop": "powershell.exe -NoProfile -File scripts/stop-codex-cdp.ps1",
+    "config:reset": "powershell.exe -NoProfile -File scripts/reset-config.ps1",
+    "setup:windows": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/install-windows-shortcuts.ps1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vite": "^6.0.0"
+  },
+  "description": "Reversible local CDP injection of ASCII Sharks into Codex Work on Windows",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eyort/ascii-shark-chat-background.git"
+  }
+}
