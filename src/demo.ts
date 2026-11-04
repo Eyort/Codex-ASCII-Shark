@@ -14,6 +14,7 @@ const fields = {
   count: document.querySelector<HTMLInputElement>("#count")!,
   grassDetail: document.querySelector<HTMLInputElement>("#grassDetail")!,
   countRow: document.querySelector<HTMLElement>("#countRow")!,
+  colorRow: document.querySelector<HTMLElement>("#colorRow")!,
   grassDetailRow: document.querySelector<HTMLElement>("#grassDetailRow")!,
   opacity: document.querySelector<HTMLInputElement>("#opacity")!,
   speed: document.querySelector<HTMLInputElement>("#speed")!,
@@ -43,6 +44,7 @@ function syncControls() {
   fields.enabled.checked = config.enabled;
   fields.mode.value = config.mode;
   fields.countRow.hidden = config.mode !== "sharks";
+  fields.colorRow.hidden = config.mode !== "sharks";
   fields.grassDetailRow.hidden = config.mode !== "grass";
   fields.count.value = String(config.count);
   fields.opacity.value = String(Math.round(config.opacity * 100));
