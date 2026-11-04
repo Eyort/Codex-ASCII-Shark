@@ -39,6 +39,24 @@ npm run inject    # 启动可撤销注入 watcher
 
 首次启用 CDP 时，如果 Codex 已在普通模式运行，启动流程可能请求正常重启客户端。请先保存未发送的输入。CDP 端口 `9335` 仅绑定回环地址；不要自行将其改为 `0.0.0.0`。
 
+### 让 Codex Agent 自动安装并验证（复制指令）
+
+> 适用于有本机终端和文件访问能力的 Codex Agent。Windows 可安装桌面快捷方式；Mac 暂无注入适配，Agent 应如实报告。
+
+```text
+请在这台电脑安装并验证 ASCII Shark Chat Background：
+https://github.com/Eyort/Codex-ASCII-Shark
+
+- 先识别操作系统，以及 Codex/ChatGPT 桌面客户端的准确名称和版本；不要假设 Chat、Work、Codex 页面 DOM 相同。
+- Windows 使用 %USERPROFILE%\source\Codex-ASCII-Shark，macOS 使用 ~/Projects/Codex-ASCII-Shark。若目录已存在，先检查 Git 状态并保留本地改动；不要覆盖或清理用户文件。只从上面的仓库克隆。
+- 先读 README、许可、配置示例和准备执行的脚本。不要索取密码、Cookie、令牌；不要改官方 app 包、app.asar 或签名文件；CDP 仅绑定 127.0.0.1。
+- 检查 Node.js 22+。若缺失，说明后通过官方来源安装，不运行不明安装器。
+- 在项目目录运行 npm ci、npm run typecheck、npm test、npm run build；失败就诊断、修复项目内问题并重跑，不得谎报通过。
+- 只有 Windows 10/11 + Microsoft Store Codex 是当前支持的注入目标。测试通过后运行 npm run setup:windows，创建本项目快捷方式但不替换官方快捷方式；检查设置页和动画演示。
+- 若启用 CDP 需要关闭/重启正在运行的 Codex，先检查未发送内容；绝不强杀。需要重启时先停下征求我确认。运行后检查动画只在 Work 主内容区，输入、滚动、文字选择和快捷键正常；不能验证就明确说明。
+- 在 macOS 不运行 Windows PowerShell 脚本，不声称注入可用；只跑适用的源码检查并说明 Mac 启动适配尚未实现。
+- 最后列出安装路径、执行命令及结果、快捷方式位置、停止/恢复方法和未完成的实机验证。
+```
 ### 配置示例
 
 复制 `.codex-shark.config.example.json` 为 `.codex-shark.config.json`，或使用可视化设置页面。用户配置不会提交到 Git。
@@ -124,6 +142,24 @@ npm run inject    # start the reversible injection watcher
 
 If Codex is already running without CDP, first-time setup may request a normal app restart. Save any unsent input first. CDP port `9335` binds to loopback only; do not change it to `0.0.0.0`.
 
+### Let a Codex agent install and verify (copy this prompt)
+
+> For a Codex agent with local terminal and file access. Windows can install desktop shortcuts. macOS has no injection adapter yet; the agent must report that accurately.
+
+```text
+Install and verify ASCII Shark Chat Background on this computer:
+https://github.com/Eyort/Codex-ASCII-Shark
+
+- First identify the OS and the exact Codex/ChatGPT desktop app name and version. Do not assume Chat, Work, and Codex pages share a DOM.
+- Use %USERPROFILE%\source\Codex-ASCII-Shark on Windows or ~/Projects/Codex-ASCII-Shark on macOS. If it already exists, inspect Git status and preserve local changes; never overwrite or clean user files. Clone only from the URL above.
+- Read the README, licenses, config example, and scripts before running them. Never ask for passwords, cookies, or tokens. Do not modify the official app package, app.asar, or signatures. Bind CDP to 127.0.0.1 only.
+- Check for Node.js 22+. If missing, explain and use an official source; never run an unknown installer.
+- In the project folder run npm ci, npm run typecheck, npm test, and npm run build. Diagnose and fix project-scoped failures, then rerun; never claim a failed step passed.
+- Injection is currently supported only on Windows 10/11 with Microsoft Store Codex. After checks pass, run npm run setup:windows without replacing the official shortcut; check the settings page and animation demo.
+- If enabling CDP requires closing/restarting Codex, check for unsent content first and never force-kill it. Stop and ask me before restarting. Then verify sharks stay behind the Work content and typing, scrolling, text selection, and shortcuts still work; say clearly if a check cannot be made.
+- On macOS, do not run Windows PowerShell scripts or claim injection works. Run applicable source checks and report that the Mac launcher adapter is not implemented.
+- Finish with the install path, commands and results, shortcut locations, stop/reset steps, and any live checks still outstanding.
+```
 ### Example configuration
 
 Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use the visual settings page. Personal configuration is excluded from Git.
