@@ -4,7 +4,7 @@ import { CdpSession, getEndpoint, listPageTargets } from "./cdp.js";
 import { loadConfig, signature, type SharkConfig } from "./config.js";
 
 type SessionRecord = { session: CdpSession; scriptId?: string; documentToken?: number };
-type PageHealth = { documentToken?: number; readyState?: string; hasControl?: boolean; hasBackground?: boolean; hasWorkSidebar?: boolean };
+type PageHealth = { documentToken?: number; readyState?: string; hasControl?: boolean; hasBackground?: boolean; hasConversationSidebar?: boolean };
 type State = { browserId: string; port: number; packageFullName: string; executablePath: string };
 
 const statePath = resolve(".codex-shark-state.json");
@@ -88,7 +88,7 @@ async function run(mode: "watch" | "remove") {
     return;
   }
 
-  console.log(`Watching Codex Work pages through verified browser ${state.browserId} on 127.0.0.1:${state.port}.`);
+  console.log(`Watching recognized ChatGPT/Codex conversation pages through verified browser ${state.browserId} on 127.0.0.1:${state.port}.`);
   try {
     while (!interrupted) {
       try {
@@ -121,24 +121,24 @@ async function run(mode: "watch" | "remove") {
             await session.send("Page.enable");
             newRecord.documentToken = await session.evaluate("performance.timeOrigin") as number | undefined;
             const result = await applyToSession(newRecord, payload, config);
-            console.log(`[shark-bg] ${target.id}: ${result?.mounted ? "Work background mounted" : result?.reason ?? "waiting for Work content"}`);
+            console.log(`[shark-bg] ${target.id}: ${result?.mounted ? "Conversation background mounted" : result?.reason ?? "waiting for conversation content"}`);
           } else {
             const health = await record.session.evaluate(`({ documentToken: performance.timeOrigin, readyState: document.readyState,
               hasControl: typeof window.__ASCII_SHARK_BACKGROUND_CONFIG__ === "function",
               hasBackground: Boolean(document.getElementById("ascii-shark-background-canvas") || document.querySelector(".ascii-grass-wave")),
-              hasWorkSidebar: Boolean(document.querySelector("aside.app-shell-left-panel")) })`) as PageHealth | undefined;
+              hasConversationSidebar: Boolean(document.querySelector("aside.app-shell-left-panel")) })`) as PageHealth | undefined;
             const navigated = typeof health?.documentToken === "number" && health.documentToken !== record.documentToken;
             if (navigated || (changed && health?.readyState === "complete") || (!health?.hasControl && health?.readyState === "complete")) {
               const result = await applyToSession(record, payload, config);
               record.documentToken = health?.documentToken;
-              console.log(`[shark-bg] ${target.id}: ${result?.mounted ? "Work background restored" : result?.reason ?? "waiting for Work content"}`);
-            } else if (!changed && health?.hasWorkSidebar && !health.hasBackground && health.hasControl) {
+              console.log(`[shark-bg] ${target.id}: ${result?.mounted ? "Conversation background restored" : result?.reason ?? "waiting for conversation content"}`);
+            } else if (!changed && health?.hasConversationSidebar && !health.hasBackground && health.hasControl) {
               const result = await record.session.evaluate(`window.__ASCII_SHARK_BACKGROUND_CONFIG__?.(${JSON.stringify(config)})`) as { mounted?: boolean; reason?: string } | undefined;
-              if (result?.mounted) console.log(`[shark-bg] ${target.id}: Work background mounted after page layout became ready`);
+              if (result?.mounted) console.log(`[shark-bg] ${target.id}: conversation background mounted after page layout became ready`);
             } else if (changed) {
               const result = await applyToSession(record, payload, config);
               record.documentToken = health?.documentToken;
-              if (result?.mounted) console.log(`[shark-bg] ${target.id}: configuration applied`);
+              if (result?.mounted) console.log(`[shark-bg] ${target.id}: conversation background configuration applied`);
             }
           }
         }

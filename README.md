@@ -9,7 +9,7 @@
 <a name="简体中文"></a>
 ## 简体中文
 
-把 ASCII 鲨鱼游动动画作为低对比度背景，显示在 **Codex 桌面端 Work 页面** 的聊天主内容区后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
+把 ASCII 鲨鱼或草浪动画作为背景，显示在 **ChatGPT / Codex 桌面端可识别的对话主内容区** 后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
 
 动画灵感与核心 OceanEngine、World 和角色绘制逻辑来自 [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks)。本项目保留了上游 MIT 许可文本，详见 [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks)。本项目自身代码采用 MIT 许可。
 
@@ -19,7 +19,7 @@
 - 动画模式可在鲨鱼与 ASCII 草浪之间二选一；草浪支持细节密度、透明度、速度、暂停和总开关。
 - 草浪由维护者提供的草地图生成一次性彩色 ASCII 纹理，再用最多 24 条轻量 CSS 波浪层播放；不是逐根独立摆动的 3D 草叶。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
-- 只在可识别的 Codex Work 主内容区注入；Canvas 不接收鼠标事件、不处理键盘输入。
+- 在可识别的 ChatGPT、Codex 和 Work 对话模式中注入到主内容区；侧边栏和导航不覆盖，动画层不接收鼠标或键盘事件。
 - 页面重载及聊天切换时由 watcher 重新定位；关闭 watcher 可清除注入。
 - 本地 CDP 和设置服务仅监听 `127.0.0.1`。
 - 附带桌面快捷方式图标；图标权利说明见 [`assets/ASSET-NOTICE.md`](assets/ASSET-NOTICE.md)。
@@ -58,8 +58,8 @@ https://github.com/Eyort/Codex-ASCII-Shark
 - 先读 README、许可、配置示例和准备执行的脚本。不要索取密码、Cookie、令牌；不要改官方 app 包、app.asar 或签名文件；CDP 仅绑定 127.0.0.1。
 - 检查 Node.js 22+。若缺失，说明后通过官方来源安装，不运行不明安装器。
 - 在项目目录运行 npm ci、npm run typecheck、npm test、npm run build；失败就诊断、修复项目内问题并重跑，不得谎报通过。
-- 只有 Windows 10/11 + Microsoft Store Codex 是当前支持的注入目标。测试通过后运行 npm run setup:windows，创建本项目快捷方式但不替换官方快捷方式；检查设置页和动画演示。
-- 若启用 CDP 需要关闭/重启正在运行的 Codex，先检查未发送内容；绝不强杀。需要重启时先停下征求我确认。运行后检查动画只在 Work 主内容区，输入、滚动、文字选择和快捷键正常；不能验证就明确说明。
+- 当前注入目标是 Windows 10/11 + Microsoft Store ChatGPT/Codex 桌面客户端。测试通过后运行 npm run setup:windows，创建本项目快捷方式但不替换官方快捷方式；检查设置页和动画演示。
+- 若启用 CDP 需要关闭/重启正在运行的客户端，先检查未发送内容；绝不强杀。需要重启时先停下征求我确认。运行后在可识别的 ChatGPT、Codex、Work 对话模式检查动画位于主内容区后方，输入、滚动、文字选择和快捷键正常；不能验证就明确说明。
 - 在 macOS 不运行 Windows PowerShell 脚本，不声称注入可用；只跑适用的源码检查并说明 Mac 启动适配尚未实现。
 - 最后列出安装路径、执行命令及结果、快捷方式位置、停止/恢复方法和未完成的实机验证。
 ```
@@ -94,8 +94,8 @@ https://github.com/Eyort/Codex-ASCII-Shark
 
 | 平台/页面 | 状态 |
 |---|---|
-| Windows 10/11 的 Microsoft Store Codex，Work 主内容页 | 当前验证目标 |
-| ChatGPT 普通聊天、其他 Codex 页面 | 不保证 DOM 一致，不自动注入 |
+| Windows 10/11 的 Microsoft Store ChatGPT/Codex 客户端，对话主页面 | 当前支持；本机已验证 ChatGPT 对话模式，其他布局按可识别的主区结构挂载 |
+| 分离窗口、工具页或没有明确模式与对话输入框的页面 | 安全跳过，不自动注入 |
 | macOS Codex | 尚未实现启动适配，也未在 Mac 上验证 |
 
 Codex 更新可能更改页面 DOM 或启动方式，届时需要重新验证定位逻辑。当前验证不覆盖所有窗口尺寸、DPI、多窗口和客户端版本。详细交接信息见 [`docs/PLATFORM-STATUS.md`](docs/PLATFORM-STATUS.md)。注入器无法识别页面时会跳过，不读取聊天正文、Cookie 或访问令牌。
@@ -116,7 +116,7 @@ npm run dev
 <a name="english"></a>
 ## English
 
-Add a subtle ASCII shark swimming animation behind the main content area of the **Codex desktop Work page**. The project injects a Canvas layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
+Add a subtle ASCII shark or grass-wave animation behind the main content area of recognized **ChatGPT and Codex desktop conversation modes**. The project injects a layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
 
 The animation is inspired by and reuses the core OceanEngine, World, and character-drawing logic from [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks). Its MIT notice is retained at [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks). This project's own code is MIT licensed.
 
@@ -126,7 +126,7 @@ The animation is inspired by and reuses the core OceanEngine, World, and charact
 - Choose either sharks or ASCII grass waves. Grass mode provides detail density, opacity, speed, pause, and enable/disable controls.
 - Grass is generated once as a colored ASCII texture from a maintainer-supplied grass image, then played with at most 24 lightweight CSS wave strips. It does not simulate individually moving 3D blades.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
-- Injection is limited to a recognized Codex Work content area. The canvas does not receive pointer events or handle keyboard input.
+- Injection supports recognized ChatGPT, Codex, and Work conversation modes. It stays inside the main conversation area and never receives pointer or keyboard input.
 - A local watcher reattaches after page reloads and chat switches; stopping it removes the injected layer.
 - CDP and the settings server bind to `127.0.0.1` only.
 - Includes a desktop shortcut icon. See [`assets/ASSET-NOTICE.md`](assets/ASSET-NOTICE.md) for its separate rights notice.
@@ -165,8 +165,8 @@ https://github.com/Eyort/Codex-ASCII-Shark
 - Read the README, licenses, config example, and scripts before running them. Never ask for passwords, cookies, or tokens. Do not modify the official app package, app.asar, or signatures. Bind CDP to 127.0.0.1 only.
 - Check for Node.js 22+. If missing, explain and use an official source; never run an unknown installer.
 - In the project folder run npm ci, npm run typecheck, npm test, and npm run build. Diagnose and fix project-scoped failures, then rerun; never claim a failed step passed.
-- Injection is currently supported only on Windows 10/11 with Microsoft Store Codex. After checks pass, run npm run setup:windows without replacing the official shortcut; check the settings page and animation demo.
-- If enabling CDP requires closing/restarting Codex, check for unsent content first and never force-kill it. Stop and ask me before restarting. Then verify sharks stay behind the Work content and typing, scrolling, text selection, and shortcuts still work; say clearly if a check cannot be made.
+- Injection currently supports Windows 10/11 with the Microsoft Store ChatGPT/Codex desktop client. After checks pass, run npm run setup:windows without replacing the official shortcut; check the settings page and animation demo.
+- If enabling CDP requires closing/restarting the client, check for unsent content first and never force-kill it. Stop and ask me before restarting. Verify the effect in recognized ChatGPT, Codex, and Work conversation modes, and check typing, scrolling, text selection, and shortcuts; say clearly if a check cannot be made.
 - On macOS, do not run Windows PowerShell scripts or claim injection works. Run applicable source checks and report that the Mac launcher adapter is not implemented.
 - Finish with the install path, commands and results, shortcut locations, stop/reset steps, and any live checks still outstanding.
 ```
@@ -201,8 +201,8 @@ Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use th
 
 | Platform/page | Status |
 |---|---|
-| Windows 10/11, Microsoft Store Codex, Work content page | Current verified target |
-| Regular ChatGPT chats and other Codex pages | DOM may differ; injection is not guaranteed |
+| Windows 10/11 Microsoft Store ChatGPT/Codex desktop, conversation content | Supported when the app mode and main conversation area are recognized; ChatGPT conversation mode verified on this machine |
+| Detached windows, utility pages, or pages without a recognized mode/composer | Safely skipped; injection is not attempted |
 | Codex for macOS | Launcher adapter is not implemented and Mac has not been tested |
 
 Codex updates may change the page DOM or startup behavior and require selector revalidation. Current verification does not cover every window size, DPI setting, multi-window setup, or app version. See [`docs/PLATFORM-STATUS.md`](docs/PLATFORM-STATUS.md) for the handoff. If a page cannot be identified, the injector skips it. It does not read chat text, cookies, or access tokens.

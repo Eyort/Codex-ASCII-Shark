@@ -28,7 +28,7 @@ const childStyleRestores = new Map<HTMLElement, {
   zIndexPriority: string;
 }>();
 
-function findWorkHost(): HTMLElement | null {
+function findConversationHost(): HTMLElement | null {
   const modeControl = [...document.querySelectorAll<HTMLElement>('button[aria-label], [role="button"][aria-label]')]
     .find((element) => /切换模式|switch mode/i.test(element.getAttribute("aria-label") ?? ""));
   if (!modeControl || !isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "")) return null;
@@ -116,7 +116,7 @@ function unmountCanvas() {
 }
 
 function mount(config: SharkConfig): boolean {
-  const host = findWorkHost();
+  const host = findConversationHost();
   if (!host || !host.isConnected) {
     unmountCanvas();
     return false;

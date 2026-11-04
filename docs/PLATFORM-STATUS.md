@@ -2,7 +2,7 @@
 
 ## Windows
 
-Windows 10/11 with the Microsoft Store Codex desktop client is the only supported runtime currently verified. The launcher discovers the installed package at run time and only accepts a CDP listener owned by that package on loopback. Work-page DOM selectors can change when Codex updates.
+Windows 10/11 with the Microsoft Store ChatGPT/Codex desktop client is the supported runtime. The injector supports recognized ChatGPT, Codex, and Work conversation modes, and requires a matching app-mode control, conversation sidebar, main area, and composer before mounting. It skips detached utility pages and unknown layouts. The current ChatGPT conversation mode has been checked on this machine; Work-mode DOM behavior still needs version-specific confirmation. The launcher discovers the installed package at run time and only accepts a CDP listener owned by that package on loopback. App DOM selectors can change after updates.
 
 The standalone preview supports exclusive shark/grass mode selection. Grass uses a bundled, local ASCII texture and CSS transforms; the user-supplied source image is documented in `assets/ASSET-NOTICE.md`. The grass engine is covered by unit/build checks and the standalone preview, but the live Work-page renderer still needs a fresh end-to-end check before this mode is described as verified in Codex.
 
