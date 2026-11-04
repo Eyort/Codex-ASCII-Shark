@@ -1,6 +1,10 @@
+export type AnimationMode = "sharks" | "grass";
+
 export type SharkConfig = {
   enabled: boolean;
   paused: boolean;
+  mode: AnimationMode;
+  grassDetail: number;
   count: number;
   opacity: number;
   speed: number;
@@ -12,6 +16,8 @@ export type SharkConfig = {
 export const DEFAULT_CONFIG: SharkConfig = {
   enabled: true,
   paused: false,
+  mode: "sharks",
+  grassDetail: 1,
   count: 3,
   opacity: 0.32,
   speed: 0.55,
@@ -28,6 +34,12 @@ export function validateConfig(input: unknown): SharkConfig {
   const config = { ...DEFAULT_CONFIG, ...value } as SharkConfig;
   if (typeof config.enabled !== "boolean" || typeof config.paused !== "boolean") {
     throw new Error("enabled and paused must be booleans");
+  }
+  if (config.mode !== "sharks" && config.mode !== "grass") {
+    throw new Error("mode must be sharks or grass");
+  }
+  if (!Number.isFinite(config.grassDetail) || config.grassDetail < 0.5 || config.grassDetail > 1.5) {
+    throw new Error("grassDetail must be between 0.5 and 1.5");
   }
   if (!Number.isInteger(config.count) || config.count < 1 || config.count > 12) {
     throw new Error("count must be an integer from 1 to 12");

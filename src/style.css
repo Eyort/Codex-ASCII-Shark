@@ -31,5 +31,6 @@ aside { padding: 20px 14px; border-radius: 18px; background: #f5f0e3; font-size:
 .switch-row input:focus-visible + .switch { outline: 2px solid #91a9b2; outline-offset: 3px; }
 .switch-row input:checked { accent-color: #829aa4; }
 .color-row { gap: 10px !important; }
+select { padding: 7px 10px; color: #60737a; border: 1px solid #dcded6; border-radius: 9px; background: #fbf8ef; font: inherit; }
 @media (max-width: 850px) { body { padding: 12px; } .window { padding: 12px; } .stage { grid-template-columns: 125px minmax(0, 1fr); } .controls { gap: 10px 15px; } .save-status { max-width: 46%; text-align: right; } }
 @media (max-width: 560px) { .stage { grid-template-columns: minmax(0, 1fr); } .stage > aside { display: none; } .work { min-height: 430px; } .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; } .control-topline { grid-column: 1 / -1; flex-wrap: wrap; } .controls label { flex-wrap: wrap; } .controls input[type="range"] { width: 90px; } }

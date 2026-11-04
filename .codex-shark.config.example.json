@@ -1,6 +1,10 @@
 {
   "enabled": true,
   "paused": false,
+  "mode": "sharks",
+  "grassDetail": 1,
+  "mode": "sharks",
+  "grassDetail": 1,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,

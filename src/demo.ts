@@ -8,7 +8,11 @@ const canvas: HTMLCanvasElement = canvasNode;
 
 const fields = {
   enabled: document.querySelector<HTMLInputElement>("#enabled")!,
+  mode: document.querySelector<HTMLSelectElement>("#mode")!,
   count: document.querySelector<HTMLInputElement>("#count")!,
+  grassDetail: document.querySelector<HTMLInputElement>("#grassDetail")!,
+  countRow: document.querySelector<HTMLElement>("#countRow")!,
+  grassDetailRow: document.querySelector<HTMLElement>("#grassDetailRow")!,
   opacity: document.querySelector<HTMLInputElement>("#opacity")!,
   speed: document.querySelector<HTMLInputElement>("#speed")!,
   color: document.querySelector<HTMLInputElement>("#color")!,
@@ -32,11 +36,16 @@ function sharks(count: number) {
 
 function syncControls() {
   fields.enabled.checked = config.enabled;
+  fields.mode.value = config.mode;
+  fields.countRow.hidden = config.mode !== "sharks";
+  fields.grassDetailRow.hidden = config.mode !== "grass";
   fields.count.value = String(config.count);
   fields.opacity.value = String(Math.round(config.opacity * 100));
   fields.speed.value = String(Math.round(config.speed * 100));
   fields.color.value = config.color;
+  fields.grassDetail.value = String(Math.round(config.grassDetail * 100));
   document.querySelector<HTMLOutputElement>("#count + output")!.value = String(config.count);
+  document.querySelector<HTMLOutputElement>("#grassDetail + output")!.value = `${config.grassDetail.toFixed(2)}×`;
   document.querySelector<HTMLOutputElement>("#opacity + output")!.value = `${Math.round(config.opacity * 100)}%`;
   document.querySelector<HTMLOutputElement>("#speed + output")!.value = `${config.speed.toFixed(2)}×`;
   document.querySelector<HTMLOutputElement>("#colorValue")!.value = config.color.toUpperCase();
@@ -63,7 +72,9 @@ function readControls() {
   config = {
     ...config,
     enabled: fields.enabled.checked,
+    mode: fields.mode.value as SharkConfig["mode"],
     count: Number(fields.count.value),
+    grassDetail: Number(fields.grassDetail.value) / 100,
     opacity: Number(fields.opacity.value) / 100,
     speed: Number(fields.speed.value) / 100,
     color: fields.color.value,
@@ -133,7 +144,7 @@ async function loadConfig() {
   }
 }
 
-for (const input of [fields.enabled, fields.count, fields.opacity, fields.speed, fields.color]) {
+for (const input of [fields.enabled, fields.count, fields.grassDetail, fields.opacity, fields.speed, fields.color, fields.mode]) {
   input.addEventListener("input", readControls);
 }
 fields.pause.addEventListener("click", () => {
