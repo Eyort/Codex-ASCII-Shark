@@ -1,4 +1,6 @@
 import { OceanEngine } from "./animation/engine";
+import { GrassWaveEngine } from "./animation/grass-wave-engine";
+import { GRASS_SOURCE_URL } from "./animation/grass-source";
 import { DEFAULT_CONFIG, type SharkConfig } from "./config-shared";
 import "./style.css";
 
@@ -24,6 +26,9 @@ const fields = {
 
 let config: SharkConfig = { ...DEFAULT_CONFIG };
 let engine: OceanEngine | null = null;
+let grassEngine: GrassWaveEngine | null = null;
+let previewGrassDetail: number | null = null;
+let previewSharkKey: string | null = null;
 let previewTimer = 0;
 let saveTimer = 0;
 let saveRevision = 0;
@@ -55,17 +60,31 @@ function syncControls() {
 
 function drawPreview() {
   window.clearTimeout(previewTimer);
-  engine?.destroy();
-  engine = null;
   canvas.style.visibility = config.enabled ? "visible" : "hidden";
   canvas.style.opacity = String(config.opacity);
-  if (!config.enabled) return;
-  engine = new OceanEngine(canvas, sharks(config.count), {
-    interactive: false,
-    speed: config.speed,
-    color: config.color,
-    paused: config.paused,
-  });
+  if (!config.enabled) {
+    engine?.destroy(); engine = null; grassEngine?.destroy(); grassEngine = null;
+    previewGrassDetail = null; previewSharkKey = null;
+    return;
+  }
+  if (config.mode === "grass") {
+    engine?.destroy(); engine = null; previewSharkKey = null;
+    if (!grassEngine || previewGrassDetail !== config.grassDetail) {
+      grassEngine?.destroy();
+      grassEngine = new GrassWaveEngine(document.querySelector<HTMLElement>(".work")!, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, paused: config.paused });
+      previewGrassDetail = config.grassDetail;
+    } else {
+      grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity); grassEngine.setPaused(config.paused);
+    }
+    return;
+  }
+  grassEngine?.destroy(); grassEngine = null; previewGrassDetail = null;
+  const key = `${config.count}|${config.speed}|${config.color}`;
+  if (!engine || previewSharkKey !== key) {
+    engine?.destroy();
+    engine = new OceanEngine(canvas, sharks(config.count), { interactive: false, speed: config.speed, color: config.color, paused: config.paused });
+    previewSharkKey = key;
+  } else engine.setPaused(config.paused);
 }
 
 function readControls() {
@@ -150,6 +169,7 @@ for (const input of [fields.enabled, fields.count, fields.grassDetail, fields.op
 fields.pause.addEventListener("click", () => {
   config = { ...config, paused: !config.paused };
   engine?.setPaused(config.paused);
+  grassEngine?.setPaused(config.paused);
   syncControls();
   scheduleSave();
 });
@@ -157,5 +177,5 @@ fields.reset.addEventListener("click", () => {
   applyConfig(DEFAULT_CONFIG);
   scheduleSave();
 });
-window.addEventListener("pagehide", () => engine?.destroy(), { once: true });
+window.addEventListener("pagehide", () => { engine?.destroy(); grassEngine?.destroy(); }, { once: true });
 void loadConfig();

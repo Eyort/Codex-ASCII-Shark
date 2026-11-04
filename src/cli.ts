@@ -4,7 +4,7 @@ import { CdpSession, getEndpoint, listPageTargets } from "./cdp.js";
 import { loadConfig, signature, type SharkConfig } from "./config.js";
 
 type SessionRecord = { session: CdpSession; scriptId?: string; documentToken?: number };
-type PageHealth = { documentToken?: number; readyState?: string; hasControl?: boolean; hasCanvas?: boolean; hasWorkSidebar?: boolean };
+type PageHealth = { documentToken?: number; readyState?: string; hasControl?: boolean; hasBackground?: boolean; hasWorkSidebar?: boolean };
 type State = { browserId: string; port: number; packageFullName: string; executablePath: string };
 
 const statePath = resolve(".codex-shark-state.json");
@@ -125,14 +125,14 @@ async function run(mode: "watch" | "remove") {
           } else {
             const health = await record.session.evaluate(`({ documentToken: performance.timeOrigin, readyState: document.readyState,
               hasControl: typeof window.__ASCII_SHARK_BACKGROUND_CONFIG__ === "function",
-              hasCanvas: Boolean(document.getElementById("ascii-shark-background-canvas")),
+              hasBackground: Boolean(document.getElementById("ascii-shark-background-canvas") || document.querySelector(".ascii-grass-wave")),
               hasWorkSidebar: Boolean(document.querySelector("aside.app-shell-left-panel")) })`) as PageHealth | undefined;
             const navigated = typeof health?.documentToken === "number" && health.documentToken !== record.documentToken;
             if (navigated || (changed && health?.readyState === "complete") || (!health?.hasControl && health?.readyState === "complete")) {
               const result = await applyToSession(record, payload, config);
               record.documentToken = health?.documentToken;
               console.log(`[shark-bg] ${target.id}: ${result?.mounted ? "Work background restored" : result?.reason ?? "waiting for Work content"}`);
-            } else if (!changed && health?.hasWorkSidebar && !health.hasCanvas && health.hasControl) {
+            } else if (!changed && health?.hasWorkSidebar && !health.hasBackground && health.hasControl) {
               const result = await record.session.evaluate(`window.__ASCII_SHARK_BACKGROUND_CONFIG__?.(${JSON.stringify(config)})`) as { mounted?: boolean; reason?: string } | undefined;
               if (result?.mounted) console.log(`[shark-bg] ${target.id}: Work background mounted after page layout became ready`);
             } else if (changed) {

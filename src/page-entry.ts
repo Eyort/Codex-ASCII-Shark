@@ -1,4 +1,7 @@
 import { OceanEngine } from "./animation/engine";
+import { AnimationSwitcher } from "./animation/animation-switcher";
+import { GrassWaveEngine } from "./animation/grass-wave-engine";
+import { GRASS_SOURCE_URL } from "./animation/grass-source";
 import type { SharkConfig } from "./config";
 
 type PageControl = {
@@ -72,15 +75,22 @@ function installStyle() {
 let currentHost: HTMLElement | null = null;
 let canvas: HTMLCanvasElement | null = null;
 let engine: OceanEngine | null = null;
+let grassEngine: GrassWaveEngine | null = null;
+const animationSwitcher = new AnimationSwitcher();
 let currentConfig: SharkConfig | null = null;
+let activeGrassDetail: number | null = null;
+let activeSharkKey: string | null = null;
 let observer: MutationObserver | null = null;
 let interval = 0;
 let scheduled = 0;
 let originallyHadHostClass = false;
 
 function unmountCanvas() {
-  engine?.destroy();
+  animationSwitcher.dispose();
   engine = null;
+  grassEngine = null;
+  activeGrassDetail = null;
+  activeSharkKey = null;
   canvas?.remove();
   canvas = null;
   for (const [child, saved] of childStyleRestores) {
@@ -115,7 +125,7 @@ function mount(config: SharkConfig): boolean {
   }
   host.classList.add(HOST_CLASS);
   for (const child of [...host.children]) {
-    if (!(child instanceof HTMLElement) || child === canvas || childStyleRestores.has(child)) continue;
+    if (!(child instanceof HTMLElement) || child === canvas || child.classList.contains("ascii-grass-wave") || childStyleRestores.has(child)) continue;
     childStyleRestores.set(child, {
       position: child.style.getPropertyValue("position"),
       positionPriority: child.style.getPropertyPriority("position"),
@@ -127,6 +137,21 @@ function mount(config: SharkConfig): boolean {
     }
     child.style.setProperty("z-index", "1");
   }
+  if (config.mode === "grass") {
+    engine = null;
+    canvas?.remove(); canvas = null;
+    if (!grassEngine || activeGrassDetail !== config.grassDetail) {
+      animationSwitcher.dispose();
+      grassEngine = animationSwitcher.activate("grass", () => new GrassWaveEngine(host, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, paused: config.paused })) as GrassWaveEngine;
+      activeGrassDetail = config.grassDetail;
+    } else {
+      grassEngine.setPaused(config.paused); grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity);
+    }
+    currentConfig = config;
+    return true;
+  }
+  grassEngine = null;
+  activeGrassDetail = null;
   if (!canvas) {
     installStyle();
     canvas = document.createElement("canvas");
@@ -137,15 +162,12 @@ function mount(config: SharkConfig): boolean {
     canvas.style.opacity = String(config.opacity);
   }
   const nextEngineConfig = `${config.count}|${config.speed}|${config.color}`;
-  const oldEngineConfig = currentConfig && `${currentConfig.count}|${currentConfig.speed}|${currentConfig.color}`;
-  if (!engine || nextEngineConfig !== oldEngineConfig) {
-    engine?.destroy();
-    engine = new OceanEngine(canvas, makeSharks(config.count), {
-      interactive: false,
-      speed: config.speed,
-      color: config.color,
-      paused: config.paused,
-    });
+  if (!engine || nextEngineConfig !== activeSharkKey) {
+    animationSwitcher.dispose();
+    engine = animationSwitcher.activate("sharks", () => new OceanEngine(canvas!, makeSharks(config.count), {
+      interactive: false, speed: config.speed, color: config.color, paused: config.paused,
+    })) as OceanEngine;
+    activeSharkKey = nextEngineConfig;
   } else {
     engine.setPaused(config.paused);
   }
