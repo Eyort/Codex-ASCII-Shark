@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/animation/**/*.ts", "src/page-entry.ts", "src/demo.ts"]
+  "include": ["src/animation/**/*.ts", "src/assets.d.ts", "src/page-entry.ts", "src/demo.ts"]
 }
