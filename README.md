@@ -2,6 +2,10 @@
 
 [English](#english) | [简体中文](#简体中文)
 
+![GIF preview showing shark color, opacity, count, and speed changes](docs/shark-animation.gif)
+
+*演示包含鲨鱼颜色、透明度、数量与速度的调整，最后恢复默认。 / Demo: adjust shark color, opacity, count, and speed, then restore defaults.*
+
 <a name="简体中文"></a>
 ## 简体中文
 
