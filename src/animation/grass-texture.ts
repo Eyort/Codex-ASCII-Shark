@@ -6,6 +6,19 @@ export function validateGrassDetail(detail: number): number {
   return detail;
 }
 
+export function tintGrassSample(luminance: number, color: string): { r: number; g: number; b: number } {
+  if (!Number.isFinite(luminance)) throw new Error("luminance must be finite");
+  const match = /^#([\da-f]{6})$/i.exec(color);
+  if (!match) throw new Error("color must be a six-digit hex color");
+  const hex = match[1]!;
+  const shade = 0.35 + 0.65 * Math.max(0, Math.min(255, luminance)) / 255;
+  return {
+    r: Math.round(Number.parseInt(hex.slice(0, 2), 16) * shade),
+    g: Math.round(Number.parseInt(hex.slice(2, 4), 16) * shade),
+    b: Math.round(Number.parseInt(hex.slice(4, 6), 16) * shade),
+  };
+}
+
 export function mapLuminanceToGlyph(luminance: number): string {
   if (!Number.isFinite(luminance)) throw new Error("luminance must be finite");
   const index = Math.max(0, Math.min(RAMP.length - 1, Math.floor(Math.max(0, Math.min(255, luminance)) / 256 * RAMP.length)));
@@ -24,7 +37,7 @@ export function computeCoverCrop(sourceWidth: number, sourceHeight: number, targ
   return { x: 0, y: (sourceHeight - height) / 2, width: sourceWidth, height };
 }
 
-export function createGrassAsciiTexture(image: CanvasImageSource, width: number, height: number, detail: number): HTMLCanvasElement {
+export function createGrassAsciiTexture(image: CanvasImageSource, width: number, height: number, detail: number, color: string): HTMLCanvasElement {
   validateGrassDetail(detail);
   if (![width, height].every(Number.isFinite) || width <= 0 || height <= 0) throw new Error("target size must be positive");
   const source = image as CanvasImageSource & { width: number; height: number };
@@ -48,7 +61,8 @@ export function createGrassAsciiTexture(image: CanvasImageSource, width: number,
   for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
     const offset = (y * columns + x) * 4;
     const luminance = 0.2126 * pixels[offset]! + 0.7152 * pixels[offset + 1]! + 0.0722 * pixels[offset + 2]!;
-    context.fillStyle = `rgba(${pixels[offset]},${pixels[offset + 1]},${pixels[offset + 2]},0.45)`;
+    const tint = tintGrassSample(luminance, color);
+    context.fillStyle = `rgba(${tint.r},${tint.g},${tint.b},0.45)`;
     context.fillText(mapLuminanceToGlyph(luminance), x * cellWidth, y * cellHeight);
   }
   return texture;

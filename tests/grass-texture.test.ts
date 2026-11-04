@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeCoverCrop, mapLuminanceToGlyph, validateGrassDetail } from "../src/animation/grass-texture.js";
+import { computeCoverCrop, mapLuminanceToGlyph, tintGrassSample, validateGrassDetail } from "../src/animation/grass-texture.js";
 
 test("maps darker samples to denser ASCII glyphs", () => {
   assert.equal(mapLuminanceToGlyph(0), "@");
@@ -21,4 +21,9 @@ test("accepts supported detail bounds and rejects values outside them", () => {
 
 test("rejects invalid crop dimensions", () => {
   assert.throws(() => computeCoverCrop(0, 100, 100, 100));
+});
+
+test("tints grass samples with the selected color while preserving luminance", () => {
+  assert.deepEqual(tintGrassSample(128, "#ff8000"), { r: 172, g: 87, b: 0 });
+  assert.throws(() => tintGrassSample(0, "green"));
 });

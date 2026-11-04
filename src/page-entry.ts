@@ -146,10 +146,10 @@ function mount(config: SharkConfig): boolean {
     canvas?.remove(); canvas = null;
     if (!grassEngine || activeGrassDetail !== config.grassDetail) {
       animationSwitcher.dispose();
-      grassEngine = animationSwitcher.activate("grass", () => new GrassWaveEngine(host, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, paused: config.paused })) as GrassWaveEngine;
+      grassEngine = animationSwitcher.activate("grass", () => new GrassWaveEngine(host, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, color: config.color, paused: config.paused })) as GrassWaveEngine;
       activeGrassDetail = config.grassDetail;
     } else {
-      grassEngine.setPaused(config.paused); grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity);
+      grassEngine.setPaused(config.paused); grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity); grassEngine.setColor(config.color);
     }
     currentConfig = config;
     return true;

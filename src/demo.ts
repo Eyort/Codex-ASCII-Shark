@@ -44,7 +44,6 @@ function syncControls() {
   fields.enabled.checked = config.enabled;
   fields.mode.value = config.mode;
   fields.countRow.hidden = config.mode !== "sharks";
-  fields.colorRow.hidden = config.mode !== "sharks";
   fields.grassDetailRow.hidden = config.mode !== "grass";
   fields.count.value = String(config.count);
   fields.opacity.value = String(Math.round(config.opacity * 100));
@@ -73,10 +72,10 @@ function drawPreview() {
     engine?.destroy(); engine = null; previewSharkKey = null;
     if (!grassEngine || previewGrassDetail !== config.grassDetail) {
       grassEngine?.destroy();
-      grassEngine = new GrassWaveEngine(document.querySelector<HTMLElement>(".work")!, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, paused: config.paused });
+      grassEngine = new GrassWaveEngine(document.querySelector<HTMLElement>(".work")!, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, color: config.color, paused: config.paused });
       previewGrassDetail = config.grassDetail;
     } else {
-      grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity); grassEngine.setPaused(config.paused);
+      grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity); grassEngine.setColor(config.color); grassEngine.setPaused(config.paused);
     }
     return;
   }

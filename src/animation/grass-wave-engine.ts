@@ -1,7 +1,7 @@
 import { createGrassAsciiTexture } from "./grass-texture.js";
 import { getGrassDurationSeconds, getGrassStripCount } from "./grass-wave-model.js";
 
-export type GrassWaveOptions = { detail: number; speed: number; opacity: number; paused: boolean };
+export type GrassWaveOptions = { detail: number; speed: number; opacity: number; color: string; paused: boolean };
 
 export class GrassWaveEngine {
   readonly ready: Promise<void>;
@@ -52,6 +52,7 @@ export class GrassWaveEngine {
     this.options.opacity = next; this.root.style.opacity = String(next);
   }
   setDetail(detail: number): void { if (this.options.detail === detail) return; this.options.detail = detail; this.render(); }
+  setColor(color: string): void { if (this.options.color === color) return; this.options.color = color; this.render(); }
 
   destroy(): void {
     if (this.destroyed) return;
@@ -66,7 +67,7 @@ export class GrassWaveEngine {
     if (this.destroyed || !this.image.complete || !this.image.naturalWidth) return;
     const rect = this.host.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return;
-    const texture = createGrassAsciiTexture(this.image, rect.width, rect.height, this.options.detail).toDataURL("image/png");
+    const texture = createGrassAsciiTexture(this.image, rect.width, rect.height, this.options.detail, this.options.color).toDataURL("image/png");
     const count = getGrassStripCount(rect.height, this.options.detail);
     this.root.replaceChildren();
     for (let index = 0; index < count; index++) {

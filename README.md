@@ -16,7 +16,7 @@
 ### 功能
 
 - Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、透明度、速度、颜色、暂停、总开关和恢复默认。
-- 动画模式可在鲨鱼与 ASCII 草浪之间二选一；草浪支持细节密度、透明度、速度、暂停和总开关。
+- 动画模式可在鲨鱼与 ASCII 草浪之间二选一；两种模式均支持颜色、透明度、速度、暂停和总开关，草浪另有细节密度。
 - 草浪由维护者提供的草地图生成一次性彩色 ASCII 纹理，再用最多 24 条轻量 CSS 波浪层播放；不是逐根独立摆动的 3D 草叶。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
 - 在可识别的 ChatGPT、Codex 和 Work 对话模式中注入到主内容区；侧边栏和导航不覆盖，动画层不接收鼠标或键盘事件。
@@ -123,7 +123,7 @@ The animation is inspired by and reuses the core OceanEngine, World, and charact
 ### Features
 
 - Canvas animation with 3 sharks by default; configure 1–12 sharks, opacity, speed, color, pause, enable/disable, and reset.
-- Choose either sharks or ASCII grass waves. Grass mode provides detail density, opacity, speed, pause, and enable/disable controls.
+- Choose either sharks or ASCII grass waves. Both modes provide color, opacity, speed, pause, and enable/disable controls; grass also has detail density.
 - Grass is generated once as a colored ASCII texture from a maintainer-supplied grass image, then played with at most 24 lightweight CSS wave strips. It does not simulate individually moving 3D blades.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
 - Injection supports recognized ChatGPT, Codex, and Work conversation modes. It stays inside the main conversation area and never receives pointer or keyboard input.
