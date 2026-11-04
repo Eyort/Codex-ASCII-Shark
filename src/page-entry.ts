@@ -3,7 +3,7 @@ import { AnimationSwitcher } from "./animation/animation-switcher";
 import { GrassWaveEngine } from "./animation/grass-wave-engine";
 import { GRASS_SOURCE_URL } from "./animation/grass-source";
 import type { SharkConfig } from "./config";
-import { isCodexWorkModeLabel } from "./work-mode";
+import { isSupportedConversationModeLabel } from "./work-mode";
 
 type PageControl = {
   configure: (config: SharkConfig) => { mounted: boolean; reason?: string };
@@ -31,7 +31,7 @@ const childStyleRestores = new Map<HTMLElement, {
 function findWorkHost(): HTMLElement | null {
   const modeControl = [...document.querySelectorAll<HTMLElement>('button[aria-label], [role="button"][aria-label]')]
     .find((element) => /切换模式|switch mode/i.test(element.getAttribute("aria-label") ?? ""));
-  if (!modeControl || !isCodexWorkModeLabel(modeControl.getAttribute("aria-label") ?? "")) return null;
+  if (!modeControl || !isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "")) return null;
   const sidebar = document.querySelector<HTMLElement>("aside.app-shell-left-panel");
   if (!sidebar) return null;
   const sidebarRight = sidebar.getBoundingClientRect().right;
@@ -207,8 +207,8 @@ function configure(config: SharkConfig) {
   ensureObserver();
   const modeControl = [...document.querySelectorAll<HTMLElement>('button[aria-label], [role="button"][aria-label]')]
     .find((element) => /切换模式|switch mode/i.test(element.getAttribute("aria-label") ?? ""));
-  const confirmed = !!modeControl && isCodexWorkModeLabel(modeControl.getAttribute("aria-label") ?? "");
-  return { mounted, reason: mounted ? undefined : confirmed ? "work-content-not-found" : "codex-work-mode-not-confirmed" };
+  const confirmed = !!modeControl && isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "");
+  return { mounted, reason: mounted ? undefined : confirmed ? "conversation-content-not-found" : "conversation-mode-not-confirmed" };
 }
 
 function ensureObserver() {

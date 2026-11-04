@@ -1,14 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isCodexWorkModeLabel } from "../src/work-mode.js";
+import { isSupportedConversationModeLabel } from "../src/work-mode.js";
 
-test("accepts an explicitly selected Codex or Work mode", () => {
-  assert.equal(isCodexWorkModeLabel("切换模式，当前模式：Codex"), true);
-  assert.equal(isCodexWorkModeLabel("Switch mode, current mode: Work"), true);
+test("accepts ChatGPT, Codex, and Work modes", () => {
+  assert.equal(isSupportedConversationModeLabel("切换模式，当前模式：ChatGPT"), true);
+  assert.equal(isSupportedConversationModeLabel("切换模式，当前模式：Codex"), true);
+  assert.equal(isSupportedConversationModeLabel("Switch mode, current mode: Work"), true);
 });
 
-test("rejects ChatGPT mode and ambiguous labels", () => {
-  assert.equal(isCodexWorkModeLabel("切换模式，当前模式：ChatGPT"), false);
-  assert.equal(isCodexWorkModeLabel("Work page"), false);
-  assert.equal(isCodexWorkModeLabel(""), false);
+test("rejects unsupported and ambiguous labels", () => {
+  assert.equal(isSupportedConversationModeLabel("切换模式，当前模式：Images"), false);
+  assert.equal(isSupportedConversationModeLabel("Work page"), false);
+  assert.equal(isSupportedConversationModeLabel(""), false);
 });

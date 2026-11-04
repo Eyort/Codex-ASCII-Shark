@@ -1,3 +1,3 @@
-export function isCodexWorkModeLabel(label: string): boolean {
-  return /(?:当前模式|current mode)\s*[:：]\s*(?:codex|work)\b/i.test(label);
+export function isSupportedConversationModeLabel(label: string): boolean {
+  return /(?:当前模式|current mode)\s*[:：]\s*(?:chatgpt|codex|work)\b/i.test(label);
 }
