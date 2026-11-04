@@ -16,6 +16,8 @@
 ### 功能
 
 - Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、透明度、速度、颜色、暂停、总开关和恢复默认。
+- 动画模式可在鲨鱼与 ASCII 草浪之间二选一；草浪支持细节密度、透明度、速度、暂停和总开关。
+- 草浪由维护者提供的草地图生成一次性彩色 ASCII 纹理，再用最多 24 条轻量 CSS 波浪层播放；不是逐根独立摆动的 3D 草叶。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
 - 只在可识别的 Codex Work 主内容区注入；Canvas 不接收鼠标事件、不处理键盘输入。
 - 页面重载及聊天切换时由 watcher 重新定位；关闭 watcher 可清除注入。
@@ -69,6 +71,8 @@ https://github.com/Eyort/Codex-ASCII-Shark
 {
   "enabled": true,
   "paused": false,
+  "mode": "sharks",
+  "grassDetail": 1.0,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
@@ -119,6 +123,8 @@ The animation is inspired by and reuses the core OceanEngine, World, and charact
 ### Features
 
 - Canvas animation with 3 sharks by default; configure 1–12 sharks, opacity, speed, color, pause, enable/disable, and reset.
+- Choose either sharks or ASCII grass waves. Grass mode provides detail density, opacity, speed, pause, and enable/disable controls.
+- Grass is generated once as a colored ASCII texture from a maintainer-supplied grass image, then played with at most 24 lightweight CSS wave strips. It does not simulate individually moving 3D blades.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
 - Injection is limited to a recognized Codex Work content area. The canvas does not receive pointer events or handle keyboard input.
 - A local watcher reattaches after page reloads and chat switches; stopping it removes the injected layer.
@@ -172,6 +178,8 @@ Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use th
 {
   "enabled": true,
   "paused": false,
+  "mode": "sharks",
+  "grassDetail": 1.0,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
