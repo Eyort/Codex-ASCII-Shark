@@ -1,12 +1,11 @@
 {
   "enabled": true,
   "paused": false,
-  "mode": "sharks",
-  "grassDetail": 1,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
   "color": "#718a99",
+  "kind": "mixed",
   "port": 9335,
   "pollIntervalMs": 1200
 }

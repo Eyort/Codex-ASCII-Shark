@@ -1,7 +1,5 @@
 import { OceanEngine } from "./animation/engine";
-import { AnimationSwitcher } from "./animation/animation-switcher";
-import { GrassWaveEngine } from "./animation/grass-wave-engine";
-import { GRASS_SOURCE_URL } from "./animation/grass-source";
+import { createSharkSpecs } from "./animation/shark-selection";
 import type { SharkConfig } from "./config";
 import { isSupportedConversationModeLabel } from "./work-mode";
 
@@ -22,16 +20,17 @@ const STYLE_ID = "ascii-shark-background-style";
 const CANVAS_ID = "ascii-shark-background-canvas";
 const HOST_CLASS = "ascii-shark-background-host";
 const childStyleRestores = new Map<HTMLElement, {
-  position: string;
-  positionPriority: string;
-  zIndex: string;
-  zIndexPriority: string;
+  position: string; positionPriority: string; zIndex: string; zIndexPriority: string;
 }>();
 
-function findConversationHost(): HTMLElement | null {
+function isSupportedConversationMode(): boolean {
   const modeControl = [...document.querySelectorAll<HTMLElement>('button[aria-label], [role="button"][aria-label]')]
     .find((element) => /切换模式|switch mode/i.test(element.getAttribute("aria-label") ?? ""));
-  if (!modeControl || !isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "")) return null;
+  return !!modeControl && isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "");
+}
+
+function findConversationHost(): HTMLElement | null {
+  if (!isSupportedConversationMode()) return null;
   const sidebar = document.querySelector<HTMLElement>("aside.app-shell-left-panel");
   if (!sidebar) return null;
   const sidebarRight = sidebar.getBoundingClientRect().right;
@@ -49,16 +48,10 @@ function findConversationHost(): HTMLElement | null {
         });
     })
     .sort((left, right) => {
-      const a = left.getBoundingClientRect();
-      const b = right.getBoundingClientRect();
+      const a = left.getBoundingClientRect(); const b = right.getBoundingClientRect();
       return b.width * b.height - a.width * a.height;
     });
   return candidates[0] ?? null;
-}
-
-function makeSharks(count: number) {
-  const sizes = [1, 0.78, 0.62, 0.88, 0.7, 0.55, 0.82, 0.66, 0.92, 0.6, 0.74, 0.5];
-  return Array.from({ length: count }, (_, index) => ({ kind: "classic" as const, size: sizes[index] }));
 }
 
 function installStyle() {
@@ -69,8 +62,7 @@ function installStyle() {
     style.textContent = `
       .${HOST_CLASS} { position: relative; isolation: isolate; }
       #${CANVAS_ID} { position: absolute; inset: 0; z-index: 0; display: block;
-        width: 100%; height: 100%; pointer-events: none; background: transparent;
-        contain: strict; }
+        width: 100%; height: 100%; pointer-events: none; background: transparent; contain: strict; }
     `;
     (document.head ?? document.documentElement).appendChild(style);
   }
@@ -79,24 +71,16 @@ function installStyle() {
 let currentHost: HTMLElement | null = null;
 let canvas: HTMLCanvasElement | null = null;
 let engine: OceanEngine | null = null;
-let grassEngine: GrassWaveEngine | null = null;
-const animationSwitcher = new AnimationSwitcher();
-let currentConfig: SharkConfig | null = null;
-let activeGrassDetail: number | null = null;
 let activeSharkKey: string | null = null;
+let currentConfig: SharkConfig | null = null;
 let observer: MutationObserver | null = null;
 let interval = 0;
 let scheduled = 0;
 let originallyHadHostClass = false;
 
 function unmountCanvas() {
-  animationSwitcher.dispose();
-  engine = null;
-  grassEngine = null;
-  activeGrassDetail = null;
-  activeSharkKey = null;
-  canvas?.remove();
-  canvas = null;
+  engine?.destroy(); engine = null; activeSharkKey = null;
+  canvas?.remove(); canvas = null;
   for (const [child, saved] of childStyleRestores) {
     if (child.style.getPropertyValue("position") === "relative" && !child.style.getPropertyPriority("position")) {
       child.style.removeProperty("position");
@@ -108,87 +92,54 @@ function unmountCanvas() {
     }
   }
   childStyleRestores.clear();
-  if (currentHost) {
-    if (!originallyHadHostClass) currentHost.classList.remove(HOST_CLASS);
-  }
-  currentHost = null;
-  originallyHadHostClass = false;
+  if (currentHost && !originallyHadHostClass) currentHost.classList.remove(HOST_CLASS);
+  currentHost = null; originallyHadHostClass = false;
 }
 
 function mount(config: SharkConfig): boolean {
   const host = findConversationHost();
-  if (!host || !host.isConnected) {
-    unmountCanvas();
-    return false;
-  }
+  if (!host || !host.isConnected) { unmountCanvas(); return false; }
   if (host !== currentHost) {
-    unmountCanvas();
-    currentHost = host;
+    unmountCanvas(); currentHost = host;
     originallyHadHostClass = host.classList.contains(HOST_CLASS);
     host.classList.add(HOST_CLASS);
   }
   host.classList.add(HOST_CLASS);
   for (const child of [...host.children]) {
-    if (!(child instanceof HTMLElement) || child === canvas || child.classList.contains("ascii-grass-wave") || childStyleRestores.has(child)) continue;
+    if (!(child instanceof HTMLElement) || child === canvas || childStyleRestores.has(child)) continue;
     childStyleRestores.set(child, {
-      position: child.style.getPropertyValue("position"),
-      positionPriority: child.style.getPropertyPriority("position"),
-      zIndex: child.style.getPropertyValue("z-index"),
-      zIndexPriority: child.style.getPropertyPriority("z-index"),
+      position: child.style.getPropertyValue("position"), positionPriority: child.style.getPropertyPriority("position"),
+      zIndex: child.style.getPropertyValue("z-index"), zIndexPriority: child.style.getPropertyPriority("z-index"),
     });
-    if (getComputedStyle(child).position === "static") {
-      child.style.setProperty("position", "relative");
-    }
+    if (getComputedStyle(child).position === "static") child.style.setProperty("position", "relative");
     child.style.setProperty("z-index", "1");
   }
-  if (config.mode === "grass") {
-    engine = null;
-    canvas?.remove(); canvas = null;
-    if (!grassEngine || activeGrassDetail !== config.grassDetail) {
-      animationSwitcher.dispose();
-      grassEngine = animationSwitcher.activate("grass", () => new GrassWaveEngine(host, GRASS_SOURCE_URL, { detail: config.grassDetail, speed: config.speed, opacity: config.opacity, color: config.color, paused: config.paused })) as GrassWaveEngine;
-      activeGrassDetail = config.grassDetail;
-    } else {
-      grassEngine.setPaused(config.paused); grassEngine.setSpeed(config.speed); grassEngine.setOpacity(config.opacity); grassEngine.setColor(config.color);
-    }
-    currentConfig = config;
-    return true;
-  }
-  grassEngine = null;
-  activeGrassDetail = null;
   if (!canvas) {
     installStyle();
     canvas = document.createElement("canvas");
-    canvas.id = CANVAS_ID;
-    canvas.setAttribute("aria-hidden", "true");
-    canvas.tabIndex = -1;
-    host.prepend(canvas);
-    canvas.style.opacity = String(config.opacity);
+    canvas.id = CANVAS_ID; canvas.setAttribute("aria-hidden", "true"); canvas.tabIndex = -1;
+    host.prepend(canvas); canvas.style.opacity = String(config.opacity);
   }
-  const nextEngineConfig = `${config.count}|${config.speed}|${config.color}`;
-  if (!engine || nextEngineConfig !== activeSharkKey) {
-    animationSwitcher.dispose();
-    engine = animationSwitcher.activate("sharks", () => new OceanEngine(canvas!, makeSharks(config.count), {
+  const nextKey = `${config.count}|${config.kind}|${config.speed}|${config.color}`;
+  if (!engine || nextKey !== activeSharkKey) {
+    engine?.destroy();
+    engine = new OceanEngine(canvas, createSharkSpecs(config.count, config.kind), {
       interactive: false, speed: config.speed, color: config.color, paused: config.paused,
-    })) as OceanEngine;
-    activeSharkKey = nextEngineConfig;
-  } else {
-    engine.setPaused(config.paused);
-  }
+    });
+    activeSharkKey = nextKey;
+  } else engine.setPaused(config.paused);
   canvas.style.opacity = String(config.opacity);
   currentConfig = config;
   return true;
 }
 
 function remove() {
-  observer?.disconnect();
-  observer = null;
+  observer?.disconnect(); observer = null;
   if (interval) window.clearInterval(interval);
   interval = 0;
   if (scheduled) window.clearTimeout(scheduled);
   scheduled = 0;
-  unmountCanvas();
-  document.getElementById(STYLE_ID)?.remove();
+  unmountCanvas(); document.getElementById(STYLE_ID)?.remove();
   currentConfig = null;
   delete window.__ASCII_SHARK_BACKGROUND_CONTROL__;
   delete window.__ASCII_SHARK_BACKGROUND_CONFIG__;
@@ -196,39 +147,23 @@ function remove() {
 }
 
 function configure(config: SharkConfig) {
-  if (!config.enabled) {
-    unmountCanvas();
-    currentConfig = config;
-    return { mounted: false, reason: "disabled" };
-  }
+  if (!config.enabled) { unmountCanvas(); currentConfig = config; return { mounted: false, reason: "disabled" }; }
   if (!document.documentElement) return { mounted: false, reason: "document-not-ready" };
   currentConfig = config;
   const mounted = mount(config);
   ensureObserver();
-  const modeControl = [...document.querySelectorAll<HTMLElement>('button[aria-label], [role="button"][aria-label]')]
-    .find((element) => /切换模式|switch mode/i.test(element.getAttribute("aria-label") ?? ""));
-  const confirmed = !!modeControl && isSupportedConversationModeLabel(modeControl.getAttribute("aria-label") ?? "");
-  return { mounted, reason: mounted ? undefined : confirmed ? "conversation-content-not-found" : "conversation-mode-not-confirmed" };
+  const reason = isSupportedConversationMode() ? "conversation-content-not-found" : "conversation-mode-not-confirmed";
+  return { mounted, reason: mounted ? undefined : reason };
 }
 
 function ensureObserver() {
   if (observer || !document.documentElement) return;
   observer = new MutationObserver(() => {
     if (scheduled) window.clearTimeout(scheduled);
-    scheduled = window.setTimeout(() => {
-      scheduled = 0;
-      if (currentConfig?.enabled) mount(currentConfig);
-    }, 120);
+    scheduled = window.setTimeout(() => { scheduled = 0; if (currentConfig?.enabled) mount(currentConfig); }, 120);
   });
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ["class", "data-testid"],
-  });
-  interval = window.setInterval(() => {
-    if (currentConfig?.enabled) mount(currentConfig);
-  }, 2000);
+  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "data-testid"] });
+  interval = window.setInterval(() => { if (currentConfig?.enabled) mount(currentConfig); }, 2000);
 }
 
 window.__ASCII_SHARK_BACKGROUND_CONTROL__ = { configure, remove };

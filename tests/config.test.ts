@@ -5,30 +5,25 @@ import { DEFAULT_CONFIG, validateConfig } from "../src/config.js";
 test("config defaults include three low-contrast sharks and loopback CDP port", () => {
   assert.equal(DEFAULT_CONFIG.count, 3);
   assert.equal(DEFAULT_CONFIG.port, 9335);
+  assert.equal(DEFAULT_CONFIG.kind, "mixed");
+});
+
+test("config defaults a missing shark kind to mixed and accepts all upstream kinds", () => {
+  const kinds = ["classic", "hammerhead", "greathammer", "zebra", "tiger", "mako", "thresher", "nurse"] as const;
+  assert.equal(validateConfig({}).kind, "mixed");
+  for (const kind of kinds) assert.equal(validateConfig({ kind }).kind, kind);
 });
 
 test("config rejects unsafe values outside supported ranges", () => {
   assert.throws(() => validateConfig({ count: 13 }), /count/);
   assert.throws(() => validateConfig({ color: "url(https://example.invalid)" }), /color/);
   assert.throws(() => validateConfig({ port: 80 }), /port/);
+  assert.throws(() => validateConfig({ kind: "orca" }), /kind/);
 });
 
-test("legacy config defaults to shark mode and grass detail 1", () => {
-  const config = validateConfig({ count: 3 });
-  assert.equal(config.mode, "sharks");
-  assert.equal(config.grassDetail, 1);
-});
-
-test("validates both animation modes", () => {
-  assert.equal(validateConfig({ mode: "sharks" }).mode, "sharks");
-  assert.equal(validateConfig({ mode: "grass" }).mode, "grass");
-  assert.equal(validateConfig({ grassDetail: 0.5 }).grassDetail, 0.5);
-  assert.equal(validateConfig({ grassDetail: 1.5 }).grassDetail, 1.5);
-});
-
-test("rejects invalid mode or grass detail", () => {
-  assert.throws(() => validateConfig({ mode: "fish" }), /mode/);
-  assert.throws(() => validateConfig({ grassDetail: 0.49 }), /grassDetail/);
-  assert.throws(() => validateConfig({ grassDetail: 1.51 }), /grassDetail/);
-  assert.throws(() => validateConfig({ grassDetail: Number.NaN }), /grassDetail/);
+test("ignores grass-only fields left behind in old local config files", () => {
+  const config = validateConfig({ mode: "grass", grassDetail: 1.2, count: 4 });
+  assert.equal(config.count, 4);
+  assert.equal("mode" in config, false);
+  assert.equal("grassDetail" in config, false);
 });

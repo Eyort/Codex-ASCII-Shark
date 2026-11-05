@@ -9,15 +9,13 @@
 <a name="简体中文"></a>
 ## 简体中文
 
-把 ASCII 鲨鱼或草浪动画作为背景，显示在 **ChatGPT / Codex 桌面端可识别的对话主内容区** 后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
+把 ASCII 鲨鱼动画作为背景，显示在 **ChatGPT / Codex 桌面端可识别的对话主内容区** 后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
 
 动画灵感与核心 OceanEngine、World 和角色绘制逻辑来自 [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks)。本项目保留了上游 MIT 许可文本，详见 [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks)。本项目自身代码采用 MIT 许可。
 
 ### 功能
 
-- Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、透明度、速度、颜色、暂停、总开关和恢复默认。
-- 动画模式可在鲨鱼与 ASCII 草浪之间二选一；两种模式均支持颜色、透明度、速度、暂停和总开关，草浪另有细节密度。
-- 草浪由维护者提供的草地图生成一次性彩色 ASCII 纹理，再用最多 24 条轻量 CSS 波浪层播放；不是逐根独立摆动的 3D 草叶。
+- Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、8 种上游鲨鱼外形（混合或指定品种：普通鲨、锤头鲨、大锤头鲨、斑马鲨、虎鲨、灰鲭鲨、长尾鲨、护士鲨）、透明度、速度、颜色、暂停、总开关和恢复默认。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
 - 在可识别的 ChatGPT、Codex 和 Work 对话模式中注入到主内容区；侧边栏和导航不覆盖，动画层不接收鼠标或键盘事件。
 - 页面重载及聊天切换时由 watcher 重新定位；关闭 watcher 可清除注入。
@@ -71,12 +69,11 @@ https://github.com/Eyort/Codex-ASCII-Shark
 {
   "enabled": true,
   "paused": false,
-  "mode": "sharks",
-  "grassDetail": 1.0,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
   "color": "#718a99",
+  "kind": "mixed",
   "port": 9335,
   "pollIntervalMs": 1200
 }
@@ -116,15 +113,14 @@ npm run dev
 <a name="english"></a>
 ## English
 
-Add a subtle ASCII shark or grass-wave animation behind the main content area of recognized **ChatGPT and Codex desktop conversation modes**. The project injects a layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
+Add a subtle ASCII shark animation behind the main content area of recognized **ChatGPT and Codex desktop conversation modes**. The project injects a layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
 
 The animation is inspired by and reuses the core OceanEngine, World, and character-drawing logic from [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks). Its MIT notice is retained at [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks). This project's own code is MIT licensed.
 
 ### Features
 
 - Canvas animation with 3 sharks by default; configure 1–12 sharks, opacity, speed, color, pause, enable/disable, and reset.
-- Choose either sharks or ASCII grass waves. Both modes provide color, opacity, speed, pause, and enable/disable controls; grass also has detail density.
-- Grass is generated once as a colored ASCII texture from a maintainer-supplied grass image, then played with at most 24 lightweight CSS wave strips. It does not simulate individually moving 3D blades.
+- Choose a mixed group of eight upstream shark shapes or select classic, hammerhead, great hammerhead, zebra, tiger, mako, thresher, or nurse shark.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
 - Injection supports recognized ChatGPT, Codex, and Work conversation modes. It stays inside the main conversation area and never receives pointer or keyboard input.
 - A local watcher reattaches after page reloads and chat switches; stopping it removes the injected layer.
@@ -178,12 +174,11 @@ Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use th
 {
   "enabled": true,
   "paused": false,
-  "mode": "sharks",
-  "grassDetail": 1.0,
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
   "color": "#718a99",
+  "kind": "mixed",
   "port": 9335,
   "pollIntervalMs": 1200
 }

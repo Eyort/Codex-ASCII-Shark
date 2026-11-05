@@ -125,7 +125,7 @@ async function run(mode: "watch" | "remove") {
           } else {
             const health = await record.session.evaluate(`({ documentToken: performance.timeOrigin, readyState: document.readyState,
               hasControl: typeof window.__ASCII_SHARK_BACKGROUND_CONFIG__ === "function",
-              hasBackground: Boolean(document.getElementById("ascii-shark-background-canvas") || document.querySelector(".ascii-grass-wave")),
+              hasBackground: Boolean(document.getElementById("ascii-shark-background-canvas")),
               hasConversationSidebar: Boolean(document.querySelector("aside.app-shell-left-panel")) })`) as PageHealth | undefined;
             const navigated = typeof health?.documentToken === "number" && health.documentToken !== record.documentToken;
             if (navigated || (changed && health?.readyState === "complete") || (!health?.hasControl && health?.readyState === "complete")) {
