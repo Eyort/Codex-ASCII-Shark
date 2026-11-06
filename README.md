@@ -1,4 +1,4 @@
-# ASCII Shark Chat Background
+# ASCII ArtChat Background
 
 [English](#english) | [简体中文](#简体中文)
 
