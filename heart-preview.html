@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e8" />
+    <title>ASCII Heart · 本地动画预览</title>
+    <link rel="stylesheet" href="/src/heart-preview.css" />
+  </head>
+  <body>
+    <main class="preview">
+      <header class="masthead">
+        <a class="back" href="/">← 鲨鱼设置</a>
+        <span class="eyebrow">CANVAS STUDY / 01</span>
+        <span class="local">本地预览 · 不影响聊天背景</span>
+      </header>
+      <section class="hero" aria-label="ASCII 心脏动画">
+        <canvas id="heart" aria-label="ASCII 波纹沿着心脏轮廓向外扩散"></canvas>
+        <p id="status" class="status" role="status">正在载入参考图…</p>
+      </section>
+      <section class="controls" aria-label="心脏动画参数">
+        <div class="control-copy">
+          <h1>一颗缓慢跳动的心</h1>
+          <p>原图明暗映射为 @ % # * + = : .；主体较深，五层浅色字符波纹沿轮廓扩散。</p>
+        </div>
+        <label class="color-control">字符颜色 <input id="color" type="color" value="#a86370" /></label>
+        <label>透明度 <input id="opacity" type="range" min="15" max="90" value="68" /><output id="opacityValue">68%</output></label>
+        <label>跳动速度 <input id="beatSpeed" type="range" min="50" max="160" value="85" /><output id="beatValue">0.85×</output></label>
+        <label>涟漪扩散 <input id="ringSpeed" type="range" min="10" max="140" value="42" /><output id="ringValue">0.42×</output></label>
+        <button id="pause" type="button" aria-pressed="false">暂停动画</button>
+      </section>
+      <footer>参考图只在这台电脑本地载入；这页是预览，不会切换正在运行的鲨鱼背景。</footer>
+    </main>
+    <script type="module" src="/src/heart-preview.ts"></script>
+  </body>
+</html>

@@ -1,5 +1,11 @@
 import { OceanEngine } from "./animation/engine";
+import { HandsWindowEngine } from "./animation/hands-window-engine";
+import { CatEngine } from "./animation/cat-engine";
+import { CapybaraEngine } from "./animation/capybara-engine";
+import { HeartEngine } from "./animation/heart-engine";
+import { HEART_SOURCE_URL } from "./animation/heart-source";
 import { createSharkSpecs } from "./animation/shark-selection";
+import { computePanePlacement } from "./chat-pane-placement";
 import type { SharkConfig } from "./config";
 import { isSupportedConversationModeLabel } from "./work-mode";
 
@@ -34,8 +40,8 @@ function findConversationHost(): HTMLElement | null {
   const sidebar = document.querySelector<HTMLElement>("aside.app-shell-left-panel");
   if (!sidebar) return null;
   const sidebarRight = sidebar.getBoundingClientRect().right;
-  const minWidth = Math.max(320, window.innerWidth * 0.35);
-  const minHeight = Math.max(240, window.innerHeight * 0.35);
+  const minWidth = 180;
+  const minHeight = 200;
   const candidates = [...document.querySelectorAll<HTMLElement>("main")]
     .filter((element) => {
       if (element.contains(sidebar)) return false;
@@ -71,6 +77,14 @@ function installStyle() {
 let currentHost: HTMLElement | null = null;
 let canvas: HTMLCanvasElement | null = null;
 let engine: OceanEngine | null = null;
+let handsEngine: HandsWindowEngine | null = null;
+let catEngine: CatEngine | null = null;
+let capybaraEngine: CapybaraEngine | null = null;
+let heartEngine: HeartEngine | null = null;
+let observedPane: HTMLElement | null = null;
+let observedComposer: HTMLElement | null = null;
+let paneObserver: ResizeObserver | null = null;
+let paneFrame = 0;
 let activeSharkKey: string | null = null;
 let currentConfig: SharkConfig | null = null;
 let observer: MutationObserver | null = null;
@@ -80,6 +94,13 @@ let originallyHadHostClass = false;
 
 function unmountCanvas() {
   engine?.destroy(); engine = null; activeSharkKey = null;
+  handsEngine?.dispose(); handsEngine = null;
+  catEngine?.dispose(); catEngine = null;
+  capybaraEngine?.dispose(); capybaraEngine = null;
+  heartEngine?.dispose(); heartEngine = null;
+  paneObserver?.disconnect(); paneObserver = null; observedPane = null; observedComposer = null;
+  if (paneFrame) cancelAnimationFrame(paneFrame);
+  paneFrame = 0;
   canvas?.remove(); canvas = null;
   for (const [child, saved] of childStyleRestores) {
     if (child.style.getPropertyValue("position") === "relative" && !child.style.getPropertyPriority("position")) {
@@ -120,15 +141,77 @@ function mount(config: SharkConfig): boolean {
     canvas.id = CANVAS_ID; canvas.setAttribute("aria-hidden", "true"); canvas.tabIndex = -1;
     host.prepend(canvas); canvas.style.opacity = String(config.opacity);
   }
-  const nextKey = `${config.count}|${config.kind}|${config.speed}|${config.color}`;
-  if (!engine || nextKey !== activeSharkKey) {
-    engine?.destroy();
-    engine = new OceanEngine(canvas, createSharkSpecs(config.count, config.kind), {
-      interactive: false, speed: config.speed, color: config.color, paused: config.paused,
-    });
-    activeSharkKey = nextKey;
-  } else engine.setPaused(config.paused);
-  canvas.style.opacity = String(config.opacity);
+  const pane = [...host.querySelectorAll<HTMLElement>('[class*="MainContentViewport"]')]
+    .find((element) => element.getBoundingClientRect().width > 0) ?? null;
+  const composer = ["cat", "capybara"].includes(config.animation)
+    ? [...host.querySelectorAll<HTMLElement>('[class*="ComposerLayoutRoot"]')]
+      .find((element) => element.getBoundingClientRect().width > 0) ?? null : null;
+  const hostRect = host.getBoundingClientRect();
+  const contentBox = { left: hostRect.left + host.clientLeft, top: hostRect.top + host.clientTop,
+    width: host.clientWidth, height: host.clientHeight };
+  const placement = computePanePlacement(contentBox, (pane ?? host).getBoundingClientRect());
+  if (!placement) { unmountCanvas(); return false; }
+  canvas.style.left = `${Math.round(placement.left)}px`;
+  canvas.style.top = "0px";
+  canvas.style.width = `${Math.round(placement.width)}px`;
+  const height = composer ? Math.max(140, composer.getBoundingClientRect().top - contentBox.top) : placement.height;
+  canvas.style.height = `${Math.round(height)}px`;
+  if (pane !== observedPane || composer !== observedComposer || !paneObserver) {
+    paneObserver?.disconnect();
+    observedPane = pane; observedComposer = composer;
+    paneObserver = new ResizeObserver(schedulePaneLayout);
+    paneObserver.observe(host);
+    if (pane) paneObserver.observe(pane);
+    if (composer) paneObserver.observe(composer);
+  }
+  if (config.animation === "hands") {
+    engine?.destroy(); engine = null; activeSharkKey = null;
+    catEngine?.dispose(); catEngine = null;
+    capybaraEngine?.dispose(); capybaraEngine = null;
+    heartEngine?.dispose(); heartEngine = null;
+    canvas.style.opacity = "1";
+    const options = { color: config.handsColor, opacity: config.handsOpacity, size: config.handsSize, glyphSize: config.handsGlyphSize, speed: config.handsSpeed, paused: config.paused };
+    if (!handsEngine) handsEngine = new HandsWindowEngine(canvas, options);
+    else handsEngine.setOptions(options);
+  } else if (config.animation === "shark") {
+    handsEngine?.dispose(); handsEngine = null;
+    catEngine?.dispose(); catEngine = null;
+    capybaraEngine?.dispose(); capybaraEngine = null;
+    heartEngine?.dispose(); heartEngine = null;
+    const nextKey = `${config.count}|${config.kind}|${config.speed}|${config.color}`;
+    if (!engine || nextKey !== activeSharkKey) {
+      engine?.destroy();
+      engine = new OceanEngine(canvas, createSharkSpecs(config.count, config.kind), {
+        interactive: false, speed: config.speed, color: config.color, paused: config.paused,
+      });
+      activeSharkKey = nextKey;
+    } else engine.setPaused(config.paused);
+    canvas.style.opacity = String(config.opacity);
+  } else {
+    engine?.destroy(); engine = null; activeSharkKey = null;
+    handsEngine?.dispose(); handsEngine = null;
+    canvas.style.opacity = "1";
+    const base = { opacity: config.sceneOpacity, paused: config.paused };
+    if (config.animation === "cat") {
+      capybaraEngine?.dispose(); capybaraEngine = null;
+      heartEngine?.dispose(); heartEngine = null;
+      const options = { ...base, color: config.catColor, size: config.catSize, headSpeed: 0.75 * config.sceneSpeed, tailSpeed: 0.9 * config.sceneSpeed };
+      if (!catEngine) catEngine = new CatEngine(canvas, options);
+      else catEngine.setOptions(options);
+    } else if (config.animation === "capybara") {
+      catEngine?.dispose(); catEngine = null;
+      heartEngine?.dispose(); heartEngine = null;
+      const options = { ...base, color: config.capybaraColor, size: config.capybaraSize, speed: config.sceneSpeed };
+      if (!capybaraEngine) capybaraEngine = new CapybaraEngine(canvas, options);
+      else capybaraEngine.setOptions(options);
+    } else {
+      catEngine?.dispose(); catEngine = null;
+      capybaraEngine?.dispose(); capybaraEngine = null;
+      const options = { ...base, color: config.heartColor, size: config.heartSize, beatSpeed: 0.85 * config.sceneSpeed, ringSpeed: 0.42 * config.sceneSpeed };
+      if (!heartEngine) heartEngine = new HeartEngine(canvas, HEART_SOURCE_URL, options);
+      else heartEngine.setOptions(options);
+    }
+  }
   currentConfig = config;
   return true;
 }
@@ -140,6 +223,7 @@ function remove() {
   if (scheduled) window.clearTimeout(scheduled);
   scheduled = 0;
   unmountCanvas(); document.getElementById(STYLE_ID)?.remove();
+  window.removeEventListener("resize", schedulePaneLayout);
   currentConfig = null;
   delete window.__ASCII_SHARK_BACKGROUND_CONTROL__;
   delete window.__ASCII_SHARK_BACKGROUND_CONFIG__;
@@ -164,6 +248,15 @@ function ensureObserver() {
   });
   observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "data-testid"] });
   interval = window.setInterval(() => { if (currentConfig?.enabled) mount(currentConfig); }, 2000);
+  window.addEventListener("resize", schedulePaneLayout);
+}
+
+function schedulePaneLayout() {
+  if (paneFrame) return;
+  paneFrame = requestAnimationFrame(() => {
+    paneFrame = 0;
+    if (currentConfig?.enabled) mount(currentConfig);
+  });
 }
 
 window.__ASCII_SHARK_BACKGROUND_CONTROL__ = { configure, remove };

@@ -16,6 +16,7 @@
 ### 功能
 
 - Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、8 种上游鲨鱼外形（混合或指定品种：普通鲨、锤头鲨、大锤头鲨、斑马鲨、虎鲨、灰鲭鲨、长尾鲨、护士鲨）、透明度、速度、颜色、暂停、总开关和恢复默认。
+- 五种可切换背景动画：鲨鱼、双手与网页窗口、猫、卡皮巴拉、心脏。在设置页选择，切换时互不叠加，新配置默认为鲨鱼。双手模式有独立的透明度、颜色、速度、比例和字符字号设置；猫、卡皮巴拉、心脏共用透明度和速度设置，并各自有独立的颜色和整体大小设置。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
 - 在可识别的 ChatGPT、Codex 和 Work 对话模式中注入到主内容区；侧边栏和导航不覆盖，动画层不接收鼠标或键盘事件。
 - 页面重载及聊天切换时由 watcher 重新定位；关闭 watcher 可清除注入。
@@ -69,11 +70,25 @@ https://github.com/Eyort/Codex-ASCII-Shark
 {
   "enabled": true,
   "paused": false,
+  "animation": "shark",
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
   "color": "#718a99",
   "kind": "mixed",
+  "handsOpacity": 0.28,
+  "handsSpeed": 1,
+  "handsColor": "#687b72",
+  "handsSize": 1,
+  "handsGlyphSize": 1.2,
+  "sceneOpacity": 0.58,
+  "sceneSpeed": 1,
+  "catColor": "#8ca99a",
+  "catSize": 1,
+  "capybaraColor": "#a79c91",
+  "capybaraSize": 1,
+  "heartColor": "#b97988",
+  "heartSize": 0.8,
   "port": 9335,
   "pollIntervalMs": 1200
 }
@@ -121,6 +136,7 @@ The animation is inspired by and reuses the core OceanEngine, World, and charact
 
 - Canvas animation with 3 sharks by default; configure 1–12 sharks, opacity, speed, color, pause, enable/disable, and reset.
 - Choose a mixed group of eight upstream shark shapes or select classic, hammerhead, great hammerhead, zebra, tiger, mako, thresher, or nurse shark.
+- Five selectable background animations: shark, hands-and-window, cat, capybara, and heart. Pick one in the settings page; switching never stacks layers, and shark is the default for new configurations. The hands mode has its own opacity, color, speed, scale, and glyph-size settings; the cat, capybara, and heart scenes share opacity and speed settings and each has its own color and overall-size setting.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
 - Injection supports recognized ChatGPT, Codex, and Work conversation modes. It stays inside the main conversation area and never receives pointer or keyboard input.
 - A local watcher reattaches after page reloads and chat switches; stopping it removes the injected layer.
@@ -174,11 +190,25 @@ Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use th
 {
   "enabled": true,
   "paused": false,
+  "animation": "shark",
   "count": 3,
   "opacity": 0.32,
   "speed": 0.55,
   "color": "#718a99",
   "kind": "mixed",
+  "handsOpacity": 0.28,
+  "handsSpeed": 1,
+  "handsColor": "#687b72",
+  "handsSize": 1,
+  "handsGlyphSize": 1.2,
+  "sceneOpacity": 0.58,
+  "sceneSpeed": 1,
+  "catColor": "#8ca99a",
+  "catSize": 1,
+  "capybaraColor": "#a79c91",
+  "capybaraSize": 1,
+  "heartColor": "#b97988",
+  "heartSize": 0.8,
   "port": 9335,
   "pollIntervalMs": 1200
 }

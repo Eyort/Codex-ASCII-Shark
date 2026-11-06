@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e8" />
+    <title>ASCII Cat · 本地动画预览</title>
+    <link rel="stylesheet" href="/src/cat-preview.css" />
+  </head>
+  <body>
+    <main class="preview">
+      <header class="masthead">
+        <a class="back" href="/">← 鲨鱼设置</a>
+        <span class="eyebrow">ASCII COMPANION / CAT</span>
+        <span class="local">本地预览 · 不影响聊天背景</span>
+      </header>
+      <section class="chat" aria-label="聊天区域布局预览">
+        <div class="chat-heading"><span>当前对话</span><span class="quiet">一只活泼的 ASCII 猫</span></div>
+        <section class="scene" aria-label="猫咪动画区域">
+          <p class="status" id="status" role="status">正在绘制 ASCII 猫…</p>
+          <canvas id="cat" aria-label="会眨眼、摇耳朵和摇尾巴的 ASCII 猫"></canvas>
+        </section>
+        <div class="composer" aria-label="聊天输入框位置示意">
+          <span>向 Codex 描述你想做的事</span>
+          <span class="composer-tools"><b>＋</b><b>↑</b></span>
+        </div>
+      </section>
+      <section class="controls" aria-label="猫咪动画参数">
+        <div class="control-copy">
+          <h1>猫咪动画预览</h1>
+          <p>耳朵独立轻动；整只眼睛眨合，尾巴从输入框上沿露出。</p>
+        </div>
+        <label class="color-control">字符颜色 <input id="color" type="color" value="#52665c" /></label>
+        <label>透明度 <input id="opacity" type="range" min="20" max="95" value="90" /><output id="opacityValue">90%</output></label>
+        <label>摇头速度 <input id="headSpeed" type="range" min="40" max="150" value="75" /><output id="headValue">0.75×</output></label>
+        <label>摇尾速度 <input id="tailSpeed" type="range" min="35" max="180" value="90" /><output id="tailValue">0.90×</output></label>
+        <button id="pause" type="button" aria-pressed="false">暂停动画</button>
+      </section>
+      <footer>底部聊天框仅用于对齐位置的示意；猫咪身体没有被预览画布裁断。</footer>
+    </main>
+    <script type="module" src="/src/cat-preview.ts"></script>
+  </body>
+</html>

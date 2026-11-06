@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e8" />
+    <title>ASCII 卡皮巴拉 · 本地打盹预览</title>
+    <link rel="stylesheet" href="/src/capybara-preview.css" />
+  </head>
+  <body>
+    <main class="preview">
+      <header class="masthead"><a class="back" href="/">← 鲨鱼设置</a><span class="eyebrow">ASCII COMPANION / CAPYBARA</span><span class="local">本地预览 · 不影响聊天背景</span></header>
+      <section class="chat" aria-label="聊天区域布局预览">
+        <div class="chat-heading"><span>当前对话</span><span class="quiet">戴橘子打盹的 ASCII 卡皮巴拉</span></div>
+        <section class="scene" aria-label="卡皮巴拉打盹动画区域">
+          <p class="status" id="status" role="status">正在绘制 ASCII 卡皮巴拉…</p>
+          <canvas id="capybara" aria-label="头部缓缓低下又惊醒，鼻涕泡随呼吸鼓起，胸腹微微起伏的 ASCII 卡皮巴拉"></canvas>
+        </section>
+        <div class="composer" aria-label="聊天输入框位置示意"><span>向 Codex 描述你想做的事</span><span class="composer-tools"><b>＋</b><b>↑</b></span></div>
+      </section>
+      <section class="controls" aria-label="卡皮巴拉动画参数">
+        <div class="control-copy"><h1>卡皮巴拉打盹预览</h1><p>橘子随头点落；泡泡在鼻尖缓缓吹大，胸腹跟着呼吸。</p></div>
+        <label class="color-control">身体颜色 <input id="color" type="color" value="#625d57" /></label>
+        <label>透明度 <input id="opacity" type="range" min="30" max="100" value="90" /><output id="opacityValue">90%</output></label>
+        <label>字符大小 <input id="size" type="range" min="70" max="130" value="100" /><output id="sizeValue">100%</output></label>
+        <label>动作速度 <input id="speed" type="range" min="50" max="160" value="100" /><output id="speedValue">1.00×</output></label>
+        <button id="pause" type="button" aria-pressed="false">暂停动画</button>
+      </section>
+      <footer>聊天框仅用于位置示意；卡皮巴拉暂未接入实际聊天背景。</footer>
+    </main>
+    <script type="module" src="/src/capybara-preview.ts"></script>
+  </body>
+</html>

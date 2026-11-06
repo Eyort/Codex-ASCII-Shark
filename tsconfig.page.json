@@ -3,10 +3,23 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/animation/**/*.ts", "src/page-entry.ts", "src/demo.ts"]
+  "include": [
+    "src/animation/**/*.ts",
+    "src/page-entry.ts",
+    "src/demo.ts",
+    "src/heart-preview.ts",
+    "src/cat-preview.ts",
+    "src/capybara-preview.ts",
+    "src/hands-window-preview.ts",
+    "src/animation/heart-engine.ts"
+  ]
 }

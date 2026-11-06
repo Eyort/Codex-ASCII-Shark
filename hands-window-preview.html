@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e7e9e6" />
+    <title>双手与窗口 — ASCII 动画研究</title>
+    <link rel="stylesheet" href="/src/hands-window-preview.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="返回鲨鱼设置"><span class="brand-mark" aria-hidden="true">::</span><span>ASCII <b>MOTION</b> STUDIES</span></a>
+        <span class="header-context">字符动画 / 本地预览</span>
+        <a class="return-link" href="/">返回设置 <span aria-hidden="true">↗</span></a>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="kicker"><span class="kicker-line"></span>MOTION STUDY 01 — HUMAN / MACHINE</p>
+          <h1 id="page-title">在静止的窗口前，<br /><em>让手慢慢呼吸。</em></h1>
+          <p class="intro-description">窗口留在原处。左右小臂轻轻起伏，手腕与指尖顺着关节稍晚跟进。把原图的点阵留给动作，而不是让整只手一起晃动。</p>
+        </div>
+        <div class="intro-note" aria-label="作品信息">
+          <span class="note-label">STUDY NOTES</span>
+          <div><span>画面</span><strong>160 × 30 字符</strong></div>
+          <div><span>节奏</span><strong>4.8 秒 / 次呼吸</strong></div>
+          <div><span>状态</span><strong>本地实时预览</strong></div>
+        </div>
+      </section>
+
+      <section class="workbench" aria-label="双手与网页窗口动画预览">
+        <div class="bench-header"><div class="bench-title"><span class="live-dot" aria-hidden="true"></span><span>LIVE CANVAS</span><span class="bench-separator">/</span><strong>PROJECT.EXE</strong></div><span class="bench-mode">WINDOW LOCKED <span aria-hidden="true">□</span></span></div>
+        <div class="scene" aria-label="双手与网页窗口动画区域">
+          <span class="scene-coordinate" aria-hidden="true">X / 00—160<br />Y / 00—030</span>
+          <p class="status" id="status" role="status">正在绘制 ASCII 双手…</p>
+          <canvas id="hands" aria-label="中间窗口静止，左右手臂、手腕和手指随呼吸自然微动的 ASCII 动画"></canvas>
+          <button id="zoom" class="scene-zoom" type="button" aria-pressed="false">放大查看</button>
+        </div>
+        <div class="bench-footer"><span>左手 <i></i> 小臂 / 手腕 / 指尖</span><span>中间窗口 <i></i> 固定</span><span>右手 <i></i> 小臂 / 手腕 / 指尖</span></div>
+      </section>
+
+      <section class="studio-bottom" aria-label="预览控制区">
+        <div class="chat-example">
+          <div class="section-heading"><span>聊天位置示意</span><small>COMPOSER PLACEMENT</small></div>
+          <div class="composer"><span>向 Codex 描述你想做的事</span><span class="composer-actions"><span aria-hidden="true">＋</span><span class="send-icon" aria-hidden="true">↑</span></span></div>
+          <p>画面目前只在本页播放，尚未接入实际聊天背景。</p>
+        </div>
+        <div class="control-panel">
+          <div class="section-heading"><span>调节画面</span><small>PLAYBACK CONTROLS</small></div>
+          <div class="control-grid">
+            <label class="color-control"><span>字符颜色</span><input id="color" type="color" value="#ededed" aria-label="字符颜色" /></label>
+            <label><span>透明度</span><div class="control-input"><input id="opacity" type="range" min="30" max="100" value="90" /><output id="opacityValue">90%</output></div></label>
+            <label><span>整体大小</span><div class="control-input"><input id="size" type="range" min="70" max="120" value="100" /><output id="sizeValue">100%</output></div></label>
+            <label><span>字符字号</span><div class="control-input"><input id="glyphSize" type="range" min="90" max="140" value="120" /><output id="glyphSizeValue">120%</output></div></label>
+            <label><span>呼吸速度</span><div class="control-input"><input id="speed" type="range" min="50" max="160" value="100" /><output id="speedValue">1.00×</output></div></label>
+          </div>
+          <div class="control-actions"><button id="pause" type="button" aria-pressed="false">暂停动画</button><button id="reset" type="button">恢复默认</button></div>
+        </div>
+      </section>
+      <footer class="site-footer"><span>ASCII MOTION STUDIES</span><span>从图像转为字符，再让字符运动。</span><span>LOCAL PREVIEW / 01</span></footer>
+    </main>
+    <script type="module" src="/src/hands-window-preview.ts"></script>
+  </body>
+</html>
