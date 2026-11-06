@@ -1,6 +1,7 @@
 node_modules/
 dist/
-references/
+references/*
+!references/heart-reference.png
 vendor/
 .codex-shark-state.json
 .codex-shark.config.json
