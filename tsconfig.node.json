@@ -11,5 +11,5 @@
     "noEmit": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["src/animation/**", "src/page-entry.ts", "src/demo.ts", "src/heart-preview.ts"]
+  "exclude": ["src/animation/**", "src/page-entry.ts", "src/demo.ts", "src/docs-demo.ts", "src/heart-preview.ts"]
 }

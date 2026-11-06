@@ -16,6 +16,7 @@
     "src/animation/**/*.ts",
     "src/page-entry.ts",
     "src/demo.ts",
+    "src/docs-demo.ts",
     "src/heart-preview.ts",
     "src/cat-preview.ts",
     "src/capybara-preview.ts",
