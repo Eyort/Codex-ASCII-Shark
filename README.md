@@ -15,19 +15,18 @@
 <a name="简体中文"></a>
 ## 简体中文
 
-把 ASCII 鲨鱼动画作为背景，显示在 **ChatGPT / Codex 桌面端可识别的对话主内容区** 后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
+把可选的 ASCII 动画（鲨鱼、双手、猫、卡皮巴拉、心脏）作为背景，显示在 **ChatGPT / Codex 桌面端可识别的对话主内容区** 后方。项目使用本地回环 CDP 将动画可撤销地注入页面，不修改官方安装包、`app.asar` 或签名文件。
 
 动画灵感与核心 OceanEngine、World 和角色绘制逻辑来自 [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks)。本项目保留了上游 MIT 许可文本，详见 [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks)。本项目自身代码采用 MIT 许可。
 
 ### 功能
 
-- Canvas 鲨鱼动画，初始 3 条；支持 1–12 条、8 种上游鲨鱼外形（混合或指定品种：普通鲨、锤头鲨、大锤头鲨、斑马鲨、虎鲨、灰鲭鲨、长尾鲨、护士鲨）、透明度、速度、颜色、暂停、总开关和恢复默认。
-- 五种可切换背景动画，在设置页选择，切换时互不叠加，新配置默认为鲨鱼：
+- 五种可切换背景动画，在设置页选择，切换时互不叠加，新配置默认为鲨鱼；支持暂停、总开关和恢复默认：
   - **鲨鱼**：1–12 条、8 个品种可混选，透明度、速度、颜色可调。
   - **双手**：点阵双手托住固定的网页窗口，手臂与指尖随呼吸分层微动；独立的透明度、颜色、速度、比例、字符字号。
   - **猫**：坐在输入框上沿，头颈与胡须一起活动，双耳各自转动，会眨眼；独立颜色和整体大小。
   - **卡皮巴拉**：头与橘子缓缓下垂再回正，鼻尖泡泡随呼吸鼓起缩回；独立颜色和整体大小。
-  - **心脏**：按参考图轮廓逐字绘制的 ASCII 心脏，心跳后沿轮廓扩散五层浅色波纹；独立颜色和整体大小（默认 80%）。
+  - **心脏**：按参考图轮廓逐字绘制的 ASCII 心脏，心跳后沿轮廓扩散五层浅色波纹；独立颜色和整体大小（默认 80%）。心脏动画需要本地 `references/heart-reference.png`（不随仓库分发）；缺图时构建和其他动画不受影响，心脏模式会提示缺图。
   - 猫、卡皮巴拉、心脏共用透明度和动作速度设置。
 - 可视化设置与独立动画预览：`http://127.0.0.1:4181/`。
 - 在可识别的 ChatGPT、Codex 和 Work 对话模式中注入到主内容区；侧边栏和导航不覆盖，动画层不接收鼠标或键盘事件。
@@ -70,9 +69,10 @@ https://github.com/Eyort/Codex-ASCII-Shark
 - 检查 Node.js 22+。若缺失，说明后通过官方来源安装，不运行不明安装器。
 - 在项目目录运行 npm ci、npm run typecheck、npm test、npm run build；失败就诊断、修复项目内问题并重跑，不得谎报通过。
 - 当前注入目标是 Windows 10/11 + Microsoft Store ChatGPT/Codex 桌面客户端。测试通过后运行 npm run setup:windows，创建本项目快捷方式但不替换官方快捷方式；检查设置页和动画演示。
-- 若启用 CDP 需要关闭/重启正在运行的客户端，先检查未发送内容；绝不强杀。需要重启时先停下征求我确认。运行后在可识别的 ChatGPT、Codex、Work 对话模式检查动画位于主内容区后方，输入、滚动、文字选择和快捷键正常；不能验证就明确说明。
+- 若启用 CDP 需要关闭/重启正在运行的客户端，先检查未发送内容；绝不强杀。需要重启时先停下征求我确认。运行后在可识别的 ChatGPT、Codex、Work 对话模式逐个切换鲨鱼、双手、猫、卡皮巴拉、心脏五种动画，确认：动画位于聊天内容后方、不遮挡文字；切换时旧动画被清理、不叠加；输入、滚动、文字选择和快捷键正常。不能验证就明确说明。
+- 心脏动画依赖本地 references/heart-reference.png（仓库不分发此图）。如果缺图，如实说明心脏模式未验证，不要伪造验证结果。
 - 在 macOS 不运行 Windows PowerShell 脚本，不声称注入可用；只跑适用的源码检查并说明 Mac 启动适配尚未实现。
-- 最后列出安装路径、执行命令及结果、快捷方式位置、停止/恢复方法和未完成的实机验证。
+- 最后列出安装路径、执行命令及结果、快捷方式位置、已逐个验证的动画清单、停止/恢复方法和未完成的实机验证。
 ```
 ### 配置示例
 
@@ -118,7 +118,7 @@ https://github.com/Eyort/Codex-ASCII-Shark
 
 | 平台/页面 | 状态 |
 |---|---|
-| Windows 10/11 的 Microsoft Store ChatGPT/Codex 客户端，对话主页面 | 当前支持；本机已验证 ChatGPT 对话模式，其他布局按可识别的主区结构挂载 |
+| Windows 10/11 的 Microsoft Store ChatGPT/Codex 客户端，对话主页面 | 当前支持；本机已验证 ChatGPT 对话模式下五种动画的逐个切换与层级，其他布局按可识别的主区结构挂载 |
 | 分离窗口、工具页或没有明确模式与对话输入框的页面 | 安全跳过，不自动注入 |
 | macOS Codex | 尚未实现启动适配，也未在 Mac 上验证 |
 
@@ -133,27 +133,25 @@ npm run build
 npm run dev
 ```
 
-维护者在 Windows 设备已检查设置页、动画预览、配置边界测试、构建和一次 Work 页面挂载/重载清理流程。不同 Codex 版本和机器的实际页面行为仍需自行验收。
+维护者在 Windows 设备已检查设置页、五种动画在实际对话页的逐个切换与层级、动画预览、配置边界测试、构建和一次 Work 页面挂载/重载清理流程。不同 Codex 版本和机器的实际页面行为仍需自行验收。
 
 ---
 
 <a name="english"></a>
 ## English
 
-Add a subtle ASCII shark animation behind the main content area of recognized **ChatGPT and Codex desktop conversation modes**. The project injects a layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
+Add a selectable ASCII animation (shark, hands, cat, capybara, or heart) behind the main content area of recognized **ChatGPT and Codex desktop conversation modes**. The project injects a layer through local loopback CDP and can remove it again. It does not modify the official app package, `app.asar`, or signature files.
 
 The animation is inspired by and reuses the core OceanEngine, World, and character-drawing logic from [stackedlol/ascii-sharks](https://github.com/stackedlol/ascii-sharks). Its MIT notice is retained at [`src/animation/LICENSE.ascii-sharks`](src/animation/LICENSE.ascii-sharks). This project's own code is MIT licensed.
 
 ### Features
 
-- Canvas animation with 3 sharks by default; configure 1–12 sharks, opacity, speed, color, pause, enable/disable, and reset.
-- Choose a mixed group of eight upstream shark shapes or select classic, hammerhead, great hammerhead, zebra, tiger, mako, thresher, or nurse shark.
-- Five selectable background animations, chosen in the settings page. Switching never stacks layers, and shark is the default for new configurations:
+- Five selectable background animations, chosen in the settings page. Switching never stacks layers, and shark is the default for new configurations; pause, master switch, and reset are supported:
   - **Shark**: 1–12 sharks across eight selectable or mixed species, with opacity, speed, and color controls.
   - **Hands**: dotted hands holding a fixed web window, arms and fingertips drifting in layered breathing motion; independent opacity, color, speed, scale, and glyph-size settings.
   - **Cat**: sits on the composer's top edge; head, neck, and whiskers move together, ears rotate independently, and it blinks; independent color and overall size.
   - **Capybara**: head and orange dip slowly and spring back while the nose bubble swells and shrinks; independent color and overall size.
-  - **Heart**: an anatomical heart drawn glyph by glyph from a reference outline, with five soft ripples expanding after each beat; independent color and overall size (80% by default).
+  - **Heart**: an anatomical heart drawn glyph by glyph from a reference outline, with five soft ripples expanding after each beat; independent color and overall size (80% by default). Heart mode needs a local `references/heart-reference.png` (not distributed with the repo); without it the build and the other animations still work, and heart mode reports the missing reference.
   - The cat, capybara, and heart scenes share opacity and speed settings.
 - Visual settings and a standalone animation preview at `http://127.0.0.1:4181/`.
 - Injection supports recognized ChatGPT, Codex, and Work conversation modes. It stays inside the main conversation area and never receives pointer or keyboard input.
@@ -196,9 +194,10 @@ https://github.com/Eyort/Codex-ASCII-Shark
 - Check for Node.js 22+. If missing, explain and use an official source; never run an unknown installer.
 - In the project folder run npm ci, npm run typecheck, npm test, and npm run build. Diagnose and fix project-scoped failures, then rerun; never claim a failed step passed.
 - Injection currently supports Windows 10/11 with the Microsoft Store ChatGPT/Codex desktop client. After checks pass, run npm run setup:windows without replacing the official shortcut; check the settings page and animation demo.
-- If enabling CDP requires closing/restarting the client, check for unsent content first and never force-kill it. Stop and ask me before restarting. Verify the effect in recognized ChatGPT, Codex, and Work conversation modes, and check typing, scrolling, text selection, and shortcuts; say clearly if a check cannot be made.
+- If enabling CDP requires closing/restarting the client, check for unsent content first and never force-kill it. Stop and ask me before restarting. In recognized ChatGPT, Codex, and Work conversation modes, switch through all five animations (shark, hands, cat, capybara, heart) one by one and confirm: the animation stays behind the chat content and never covers text; switching cleans up the previous engine without stacking; typing, scrolling, text selection, and shortcuts work. Say clearly if a check cannot be made.
+- Heart mode needs a local references/heart-reference.png (the repo does not distribute it). If it is missing, report heart mode as unverified; never fabricate verification results.
 - On macOS, do not run Windows PowerShell scripts or claim injection works. Run applicable source checks and report that the Mac launcher adapter is not implemented.
-- Finish with the install path, commands and results, shortcut locations, stop/reset steps, and any live checks still outstanding.
+- Finish with the install path, commands and results, shortcut locations, the list of animations verified one by one, stop/reset steps, and any live checks still outstanding.
 ```
 ### Example configuration
 
@@ -244,7 +243,7 @@ Copy `.codex-shark.config.example.json` to `.codex-shark.config.json`, or use th
 
 | Platform/page | Status |
 |---|---|
-| Windows 10/11 Microsoft Store ChatGPT/Codex desktop, conversation content | Supported when the app mode and main conversation area are recognized; ChatGPT conversation mode verified on this machine |
+| Windows 10/11 Microsoft Store ChatGPT/Codex desktop, conversation content | Supported when the app mode and main conversation area are recognized; switching and layering of all five animations verified in ChatGPT conversation mode on this machine |
 | Detached windows, utility pages, or pages without a recognized mode/composer | Safely skipped; injection is not attempted |
 | Codex for macOS | Launcher adapter is not implemented and Mac has not been tested |
 
@@ -259,4 +258,4 @@ npm run build
 npm run dev
 ```
 
-The maintainer has checked the settings page, animation preview, configuration-boundary tests, build, and one Work-page attach/reload/cleanup flow on Windows. Actual behavior still needs verification across Codex versions and machines.
+The maintainer has checked the settings page, one-by-one switching and layering of all five animations on real conversation pages, animation previews, configuration-boundary tests, build, and one Work-page attach/reload/cleanup flow on Windows. Actual behavior still needs verification across Codex versions and machines.
