@@ -2,7 +2,7 @@
 
 [English](#english) | [简体中文](#简体中文)
 
-![鲨鱼动画演示（深色主题）](docs/anim-shark.gif)
+<img src="docs/anim-shark.gif" alt="鲨鱼动画演示（深色主题）" width="100%">
 
 | 心脏 · 深色主题 | 猫 · 深色主题 |
 | :---: | :---: |
