@@ -1,4 +1,4 @@
-# ASCII ArtChat Background
+# ASCII Art Chat Background
 
 [English](#english) | [简体中文](#简体中文)
 
