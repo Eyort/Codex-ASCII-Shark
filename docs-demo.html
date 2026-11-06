@@ -4,46 +4,71 @@
     <meta charset="UTF-8" />
     <title>Puff Background · README 演示录制</title>
     <style>
-      /* 与设置页 src/style.css 相同的界面语言：画布 z-index 0，内容层在其上方 */
+      /* 仿 ChatGPT 桌面端界面；画布 z-index 0，内容层始终在其上方 */
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      :root { font-family: "Segoe UI", system-ui, sans-serif; color: #536773; }
-      body { background: #fbf7eb; }
-      #shot {
-        position: absolute; left: 0; top: 0; width: 720px; height: 440px;
-        display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px;
-        padding: 12px; background: #fbf7eb; font-size: 13px;
-      }
-      aside { padding: 18px 12px; border-radius: 18px; background: #f5f0e3; font-size: 12px; }
-      .nav { margin-top: 20px; padding: 9px 8px; color: #929b9e; border-radius: 8px; }
-      .nav.active { background: #ebe8dc; color: #60717a; }
-      .work { position: relative; isolation: isolate; overflow: hidden; border-radius: 20px; background: #f7f3e7; display: flex; flex-direction: column; }
-      .work > :not(#bg) { position: relative; }
+      :root { font-family: "Segoe UI", system-ui, sans-serif; }
+      body { background: #000; }
+      #shot { position: absolute; left: 0; top: 0; width: 680px; height: 420px; display: grid; grid-template-columns: 168px minmax(0, 1fr); }
+      .side { padding: 12px 10px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+      .side .brand { font-size: 14px; font-weight: 600; padding: 6px 8px 10px; }
+      .side .item { padding: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+      .side .item span.arrow { opacity: 0.5; }
+      .pane { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; }
+      .pane > :not(#bg) { position: relative; }
       #bg { position: absolute; left: 0; top: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; background: transparent; }
-      #shot[data-anim="hands"] #bg { left: 18px; width: calc(100% - 36px); height: calc(100% - 112px); }
-      #shot[data-anim="cat"] #bg, #shot[data-anim="capybara"] #bg { height: calc(100% - 112px); }
-      .taskhead { height: 56px; padding: 20px 24px; display: flex; justify-content: space-between; border-bottom: 1px solid #eae5d8; font-size: 13px; }
-      .muted { color: #98a2a5; font-size: 12px; }
-      .conversation { flex: 1; padding: 26px clamp(20px, 6vw, 60px) 20px; display: flex; flex-direction: column; gap: 16px; }
-      .bubble { position: relative; max-width: 78%; padding: 13px 16px; border: 1px solid #e7e2d5; border-radius: 16px; background: #fbf8efde; font-size: 13px; line-height: 1.6; box-shadow: 0 5px 20px #3a433d08; }
-      .bubble p { margin: 6px 0 0; }
-      .bubble.user { align-self: flex-end; background: #eef2f0dc; }
-      .composer { position: relative; margin: 0 18px 18px; min-height: 94px; padding: 16px; border: 1px solid #e7e2d7; border-radius: 18px; background: #fbf8efed; box-shadow: 0 3px 14px #443c2708; color: #99a2a3; font-size: 13px; }
-      .composer button { position: absolute; bottom: 12px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; color: #87989d; font-size: 19px; }
-      .composer button:first-of-type { left: 12px; }
-      .composer .send { right: 12px; border: 1px solid #b8c2c1; font-size: 16px; }
+      #shot[data-anim="capybara"] #bg { height: calc(100% - 96px); }
+      .topbar { height: 44px; flex: none; display: flex; align-items: center; padding: 0 16px; font-size: 13px; font-weight: 600; }
+      .chat { flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 18px; font-size: 13px; }
+      .ask { align-self: flex-end; padding: 8px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
+      .reply { max-width: 88%; line-height: 1.65; }
+      .reply .icons { display: flex; gap: 12px; margin-top: 8px; font-size: 12px; opacity: 0.45; }
+      .composer { flex: none; margin: 0 16px 6px; min-height: 64px; border-radius: 22px; display: flex; align-items: flex-start; padding: 14px 16px; gap: 10px; font-size: 13px; }
+      .composer .plus { font-size: 16px; line-height: 1; margin-top: 1px; }
+      .composer .up { margin-left: auto; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+      .note { flex: none; text-align: center; font-size: 11px; padding: 6px 0 10px; }
+
+      /* 深色主题（参考 ChatGPT 深色模式截图） */
+      #shot[data-theme="dark"] { background: #0d0d0d; color: #ececec; }
+      #shot[data-theme="dark"] .side { background: #171717; color: #d4d4d4; }
+      #shot[data-theme="dark"] .side .item:hover { background: #242424; }
+      #shot[data-theme="dark"] .pane { background: #0d0d0d; }
+      #shot[data-theme="dark"] .ask { background: #2f2f2f; color: #ececec; }
+      #shot[data-theme="dark"] .reply { color: #ececec; }
+      #shot[data-theme="dark"] .composer { background: #2f2f2f; color: #9a9a9a; }
+      #shot[data-theme="dark"] .composer .up { background: #4a4a4a; color: #d4d4d4; }
+      #shot[data-theme="dark"] .note { color: #7a7a7a; }
+
+      /* 浅色主题（参考 ChatGPT 浅色模式截图） */
+      #shot[data-theme="light"] { background: #ffffff; color: #0d0d0d; }
+      #shot[data-theme="light"] .side { background: #f9f9f9; color: #3a3a3a; border-right: 1px solid #efefef; }
+      #shot[data-theme="light"] .pane { background: #ffffff; }
+      #shot[data-theme="light"] .ask { background: #f4f4f4; color: #0d0d0d; }
+      #shot[data-theme="light"] .reply { color: #0d0d0d; }
+      #shot[data-theme="light"] .composer { background: #ffffff; border: 1px solid #e5e5e5; color: #8e8e8e; box-shadow: 0 2px 10px #0000000a; }
+      #shot[data-theme="light"] .composer .up { background: #0d0d0d; color: #ffffff; }
+      #shot[data-theme="light"] .note { color: #9a9a9a; }
     </style>
   </head>
   <body>
-    <div id="shot" data-anim="shark">
-      <aside><b>项目</b><div class="nav active">当前任务</div><div class="nav">历史任务</div><div class="nav">设置</div></aside>
-      <section class="work">
+    <div id="shot" data-theme="dark" data-anim="shark">
+      <div class="side">
+        <div class="brand">ChatGPT</div>
+        <div class="item">新聊天</div>
+        <div class="item">项目 <span class="arrow">›</span></div>
+        <div class="item">最近 <span class="arrow">›</span></div>
+      </div>
+      <section class="pane">
         <canvas id="bg" aria-hidden="true"></canvas>
-        <div class="taskhead"><span>任务内容</span><span class="muted">本地预览</span></div>
-        <div class="conversation">
-          <div class="bubble user">把选中的 ASCII 动画放进聊天背景。</div>
-          <div class="bubble assistant"><b>Codex</b><p>我会先确认对话页面目标区域，然后再开始处理。Canvas 位于内容层后方，不接收鼠标事件。</p></div>
+        <div class="topbar">问候交流</div>
+        <div class="chat">
+          <div class="ask">你好</div>
+          <div class="reply">
+            晚上好呀！今天想聊点什么？工作、AI创作，还是单纯来找我唠唠嗑？
+            <div class="icons"><span>⧉</span><span>♪</span><span>↻</span><span>···</span></div>
+          </div>
         </div>
-        <div class="composer"><span>向 Codex 描述要构建的内容</span><button aria-label="添加">＋</button><button class="send" aria-label="发送">↑</button></div>
+        <div class="composer"><span class="plus">＋</span><span>询问 ChatGPT</span><span class="up">↑</span></div>
+        <div class="note">ChatGPT 可能会出错。请核查重要信息。</div>
       </section>
     </div>
     <script type="module" src="/src/docs-demo.ts"></script>

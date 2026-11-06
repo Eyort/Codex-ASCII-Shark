@@ -2,9 +2,11 @@
 
 [English](#english) | [简体中文](#简体中文)
 
-| 鲨鱼 | 双手 | 猫 | 卡皮巴拉 | 心脏 |
-| :---: | :---: | :---: | :---: | :---: |
-| ![鲨鱼动画演示](docs/anim-shark.gif) | ![双手动画演示](docs/anim-hands.gif) | ![猫动画演示](docs/anim-cat.gif) | ![卡皮巴拉动画演示](docs/anim-capybara.gif) | ![心脏动画演示](docs/anim-heart.gif) |
+| 鲨鱼 · 深色主题 | 心脏 · 深色主题 |
+| :---: | :---: |
+| ![鲨鱼动画演示（深色）](docs/anim-shark.gif) | ![心脏动画演示（深色）](docs/anim-heart.gif) |
+| **双手 · 浅色主题** | **卡皮巴拉 · 浅色主题** |
+| ![双手动画演示（浅色）](docs/anim-hands.gif) | ![卡皮巴拉动画演示（浅色）](docs/anim-capybara.gif) |
 
 *五种可选聊天背景动画；演示中对话内容与输入框始终位于动画层上方。 / Five selectable chat background animations; the conversation and composer always stay above the animation layer.*
 
