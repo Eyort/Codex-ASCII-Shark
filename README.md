@@ -2,9 +2,11 @@
 
 [English](#english) | [简体中文](#简体中文)
 
-| 鲨鱼 · 深色主题 | 心脏 · 深色主题 |
+![鲨鱼动画演示（深色主题）](docs/anim-shark.gif)
+
+| 心脏 · 深色主题 | 猫 · 深色主题 |
 | :---: | :---: |
-| ![鲨鱼动画演示（深色）](docs/anim-shark.gif) | ![心脏动画演示（深色）](docs/anim-heart.gif) |
+| ![心脏动画演示（深色）](docs/anim-heart.gif) | ![猫动画演示（深色）](docs/anim-cat.gif) |
 | **双手 · 浅色主题** | **卡皮巴拉 · 浅色主题** |
 | ![双手动画演示（浅色）](docs/anim-hands.gif) | ![卡皮巴拉动画演示（浅色）](docs/anim-capybara.gif) |
 

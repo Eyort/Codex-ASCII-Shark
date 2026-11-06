@@ -10,19 +10,19 @@ import { createSharkSpecs } from "./animation/shark-selection.js";
 // 速度刻意放慢，抽帧合成后播放仍显自然。
 const params = new URLSearchParams(location.search);
 const anim = params.get("anim") ?? "shark";
-const theme = params.get("theme") ?? (anim === "shark" || anim === "heart" ? "dark" : "light");
+const theme = params.get("theme") ?? (anim === "hands" || anim === "capybara" ? "light" : "dark");
 const shot = document.getElementById("shot")!;
 const canvas = document.querySelector<HTMLCanvasElement>("#bg")!;
 shot.dataset.anim = anim;
 shot.dataset.theme = theme;
 
 if (anim === "shark") {
-  canvas.style.opacity = "0.8";
-  new OceanEngine(canvas, createSharkSpecs(3, "mixed"), { interactive: false, speed: 0.32, color: "#14681d", paused: false });
+  canvas.style.opacity = "1";
+  new OceanEngine(canvas, createSharkSpecs(3, "mixed"), { interactive: false, speed: 0.32, color: "#23a333", paused: false });
 } else if (anim === "hands") {
   new HandsWindowEngine(canvas, { color: "#6e6e6e", opacity: 0.55, size: 1, glyphSize: 1.2, speed: 1, paused: false });
 } else if (anim === "cat") {
-  new CatEngine(canvas, { color: "#8ca99a", opacity: 0.75, size: 1, headSpeed: 0.3, tailSpeed: 0.35, paused: false });
+  new CatEngine(canvas, { color: "#9db8a9", opacity: 0.85, size: 1, headSpeed: 0.3, tailSpeed: 0.35, paused: false });
 } else if (anim === "capybara") {
   new CapybaraEngine(canvas, { color: "#707070", opacity: 0.6, size: 0.9, speed: 0.5, paused: false });
 } else if (anim === "heart") {
